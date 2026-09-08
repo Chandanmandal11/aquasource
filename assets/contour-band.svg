@@ -1,0 +1,5 @@
+<svg viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 30 C150 5 300 55 450 30 C600 5 750 55 900 30 C1050 5 1150 40 1200 30" stroke="#C9C2AE" stroke-width="1" fill="none"/>
+  <path d="M0 40 C150 15 300 65 450 40 C600 15 750 65 900 40 C1050 15 1150 50 1200 40" stroke="#CE8A46" stroke-width="1.2" fill="none" opacity="0.6"/>
+  <path d="M0 20 C150 -5 300 45 450 20 C600 -5 750 45 900 20 C1050 -5 1150 30 1200 20" stroke="#4C7A80" stroke-width="1" fill="none" opacity="0.5"/>
+</svg>

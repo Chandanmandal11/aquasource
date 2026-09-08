@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order — Aqua Nirmal</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand">
+      <img src="assets/logo-mark.svg" class="brand-mark" alt="">
+      <span><span class="brand-name">Aqua Nirmal</span><span class="brand-tag">QUALITY KHANE PANI</span></span>
+    </a>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products &amp; Pricing</a></li>
+        <li><a href="about.html">About &amp; Quality</a></li>
+        <li><a href="order.html" class="active">Order</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-cta">
+      <a href="#track" class="btn btn-outline">Track order</a>
+      <a href="#order-form" class="btn btn-primary">Order now</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="eyebrow-line">Order</div>
+    <h1>Set up your delivery in under a minute.</h1>
+    <p>Fill this in and it's sent straight to our order desk on WhatsApp — you'll get a confirmation with your delivery slot.</p>
+  </div>
+</section>
+
+<section id="order-section">
+  <div class="wrap two-col" style="align-items:start;">
+    <form id="order-form" novalidate>
+      <fieldset>
+        <legend>Jar size</legend>
+        <div class="form-grid">
+          <label style="display:flex;align-items:center;gap:.6em;font-weight:400;">
+            <input type="radio" name="jarSize" value="1L" style="width:auto;"> 1L Bottle — Rs 15
+          </label>
+          <label style="display:flex;align-items:center;gap:.6em;font-weight:400;">
+            <input type="radio" name="jarSize" value="20L" checked style="width:auto;"> 20L Jar — Rs 30–50 (by quantity)
+          </label>
+          <label style="display:flex;align-items:center;gap:.6em;font-weight:400;">
+            <input type="radio" name="jarSize" value="5L" style="width:auto;"> 5L Can — Rs 30
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Quantity</legend>
+        <div class="qty-control">
+          <button type="button" id="qty-minus" aria-label="Decrease quantity">−</button>
+          <span id="qty-value" style="font-family:var(--serif);font-size:1.3rem;min-width:2ch;text-align:center;">1</span>
+          <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
+          <input type="hidden" id="qty-hidden" name="qty" value="1">
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Delivery plan</legend>
+        <div class="form-grid">
+          <label style="display:flex;align-items:center;gap:.6em;font-weight:400;">
+            <input type="radio" name="frequency" value="one-time" checked style="width:auto;"> One-time
+          </label>
+          <label style="display:flex;align-items:center;gap:.6em;font-weight:400;">
+            <input type="radio" name="frequency" value="weekly" style="width:auto;"> Weekly (10% off)
+          </label>
+          <label style="display:flex;align-items:center;gap:.6em;font-weight:400;">
+            <input type="radio" name="frequency" value="monthly" style="width:auto;"> Monthly (5% off)
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Delivery details</legend>
+        <div class="form-grid">
+          <div class="full">
+            <label for="o-name">Full name</label>
+            <input id="o-name" name="name" required>
+          </div>
+          <div class="full">
+            <label for="o-address">Delivery address</label>
+            <textarea id="o-address" name="address" required></textarea>
+          </div>
+          <div>
+            <label for="o-pincode">Area / Tole</label>
+            <input id="o-pincode" name="pincode" placeholder="e.g. Gokarneshwor-8" required>
+          </div>
+          <div>
+            <label for="o-phone">Phone number</label>
+            <input id="o-phone" name="phone" type="tel" required>
+          </div>
+          <div class="full">
+            <label for="o-slot">Preferred delivery slot</label>
+            <select id="o-slot" name="slot">
+              <option>Morning, 7–10 AM</option>
+              <option>Midday, 12–2 PM</option>
+              <option selected>Evening, 6–8 PM</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <button type="submit" class="btn btn-primary btn-wa">Send order via WhatsApp</button>
+      <p style="font-size:.82rem;color:#767f7c;margin-top:1em;">Prefer cash or card on delivery? Choose that when our rider arrives — no online payment required to place this order.</p>
+    </form>
+
+    <aside class="order-summary">
+      <h3>Order summary</h3>
+      <div class="row"><span>Jar size</span><strong id="sum-size">20L</strong></div>
+      <div class="row"><span>Quantity</span><strong id="sum-qty">1</strong></div>
+      <div class="row"><span>Unit price</span><strong id="sum-unit">Rs 60</strong></div>
+      <div class="row"><span>Plan</span><strong id="sum-freq">One-time</strong></div>
+      <div class="row total"><span>Estimated total</span><strong id="sum-total">Rs 60</strong></div>
+      <p style="font-size:.8rem;color:#767f7c;margin-top:1em;">First order of a returnable size includes a one-time refundable deposit, added by our team on WhatsApp.</p>
+    </aside>
+  </div>
+</section>
+
+<section id="track" class="section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow-line">Track an order</div>
+      <h2>Where's my jar?</h2>
+      <p>For live status, message us your order confirmation number on WhatsApp and our team will reply with the rider's ETA. A self-serve tracking page is on our roadmap — for now this stays fast and human.</p>
+    </div>
+    <a href="https://wa.me/9779700150416?text=Hi%2C%20I%27d%20like%20a%20status%20update%20on%20my%20order." target="_blank" class="btn btn-wa">Track via WhatsApp</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="brand" style="margin-bottom:1em;">
+        <img src="assets/logo-mark.svg" class="brand-mark" alt="" style="filter:invert(1) brightness(2);">
+        <span class="brand-name" style="color:var(--white)">Aqua Nirmal</span>
+      </div>
+      <p style="color:rgba(255,255,255,.6); font-size:.9rem;">Aqua Nirmal Quality Khane Pani (Pra.) Ltd. — purified water, delivered door to door. Bulk orders welcome.</p>
+    </div>
+    <div>
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="products.html">Products &amp; Pricing</a></li>
+        <li><a href="about.html">About &amp; Quality</a></li>
+        <li><a href="order.html">Order Online</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <ul>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="#track">Track an Order</a></li>
+        <li><a href="about.html#certs">Quality Reports</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Reach us</h4>
+      <ul>
+        <li>+977 9700150416</li>
+        <li>aquanirmal5@gmail.com</li>
+        <li>Sun–Fri, 7 AM–7 PM</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© <span data-year></span> Aqua Nirmal. All rights reserved.</span>
+    <span>Made for local, door-to-door water service.</span>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/9779700150416" target="_blank" aria-label="Chat on WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.09-1.33A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.2-1.77 1.24-.46.05-1 .07-1.6-.1-.37-.1-.85-.28-1.46-.55-2.57-1.11-4.24-3.7-4.37-3.87-.13-.17-1.05-1.39-1.05-2.65s.67-1.87.9-2.13c.23-.25.5-.32.67-.32.17 0 .34 0 .48.01.16.01.36-.06.56.43.22.53.73 1.83.8 1.96.06.13.1.28.02.45-.08.17-.13.28-.25.43-.13.15-.27.34-.38.46-.13.13-.26.28-.11.54.15.26.67 1.1 1.44 1.78.99.88 1.83 1.16 2.08 1.29.25.13.4.11.55-.07.15-.17.63-.73.8-.98.17-.25.34-.21.56-.13.23.09 1.45.68 1.7.8.25.13.42.19.48.3.06.11.06.62-.16 1.23z"/></svg>
+</a>
+
+<script src="js/main.js"></script>
+</body>
+</html>
