@@ -35,54 +35,41 @@
   <div class="wrap">
     <div class="eyebrow-line">Order</div>
     <h1>Set up your delivery in under a minute.</h1>
-    <p>Fill this in and it's sent straight to our order desk on WhatsApp — you'll get a confirmation with your delivery slot.</p>
+    <p>Fill this in and it's sent straight to our order desk on WhatsApp — you'll get a confirmation with your delivery slot and confirmed rate.</p>
   </div>
 </section>
 
 <section id="order-section">
   <div class="wrap two-col" style="align-items:start;">
     <form id="order-form" novalidate>
-      <fieldset>
-        <legend>Jar size</legend>
-        <div class="form-grid">
-          <label style="display:flex;align-items:center;gap:.6em;font-weight:400;">
-            <input type="radio" name="jarSize" value="1L" style="width:auto;"> 1L Bottle — Rs 15
-          </label>
-          <label style="display:flex;align-items:center;gap:.6em;font-weight:400;">
-            <input type="radio" name="jarSize" value="20L" checked style="width:auto;"> 20L Jar — Rs 30–50 (by quantity)
-          </label>
-          <label style="display:flex;align-items:center;gap:.6em;font-weight:400;">
-            <input type="radio" name="jarSize" value="5L" style="width:auto;"> 5L Can — Rs 30
-          </label>
+      <fieldset class="product-lock reveal">
+        <legend>Your jar</legend>
+        <div class="product-lock-inner">
+          <div class="product-lock-art" aria-hidden="true">
+            <span class="jar-glyph"><span class="jar-fill"></span></span>
+          </div>
+          <div>
+            <h3>20L Returnable Jar</h3>
+            <p>Multi-stage RO + UV purified, sealed the day it's filled, and swapped at your door on every delivery.</p>
+            <span class="min-pill">Minimum order — 5 jars</span>
+          </div>
         </div>
+        <input type="hidden" name="jarSize" value="20L">
       </fieldset>
 
-      <fieldset>
+      <fieldset class="reveal">
         <legend>Quantity</legend>
         <div class="qty-control">
           <button type="button" id="qty-minus" aria-label="Decrease quantity">−</button>
-          <span id="qty-value" style="font-family:var(--serif);font-size:1.3rem;min-width:2ch;text-align:center;">1</span>
+          <span id="qty-value">5</span>
           <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
-          <input type="hidden" id="qty-hidden" name="qty" value="1">
+          <input type="hidden" id="qty-hidden" name="qty" value="5">
+          <span class="qty-unit">jars</span>
         </div>
+        <p id="qty-note" class="qty-note">Orders start at 5 jars. Ordering more? Our rate improves with volume — confirmed on WhatsApp.</p>
       </fieldset>
 
-      <fieldset>
-        <legend>Delivery plan</legend>
-        <div class="form-grid">
-          <label style="display:flex;align-items:center;gap:.6em;font-weight:400;">
-            <input type="radio" name="frequency" value="one-time" checked style="width:auto;"> One-time
-          </label>
-          <label style="display:flex;align-items:center;gap:.6em;font-weight:400;">
-            <input type="radio" name="frequency" value="weekly" style="width:auto;"> Weekly (10% off)
-          </label>
-          <label style="display:flex;align-items:center;gap:.6em;font-weight:400;">
-            <input type="radio" name="frequency" value="monthly" style="width:auto;"> Monthly (5% off)
-          </label>
-        </div>
-      </fieldset>
-
-      <fieldset>
+      <fieldset class="reveal">
         <legend>Delivery details</legend>
         <div class="form-grid">
           <div class="full">
@@ -116,14 +103,13 @@
       <p style="font-size:.82rem;color:#767f7c;margin-top:1em;">Prefer cash or card on delivery? Choose that when our rider arrives — no online payment required to place this order.</p>
     </form>
 
-    <aside class="order-summary">
+    <aside class="order-summary reveal">
       <h3>Order summary</h3>
       <div class="row"><span>Jar size</span><strong id="sum-size">20L</strong></div>
-      <div class="row"><span>Quantity</span><strong id="sum-qty">1</strong></div>
-      <div class="row"><span>Unit price</span><strong id="sum-unit">Rs 60</strong></div>
-      <div class="row"><span>Plan</span><strong id="sum-freq">One-time</strong></div>
-      <div class="row total"><span>Estimated total</span><strong id="sum-total">Rs 60</strong></div>
-      <p style="font-size:.8rem;color:#767f7c;margin-top:1em;">First order of a returnable size includes a one-time refundable deposit, added by our team on WhatsApp.</p>
+      <div class="row"><span>Quantity</span><strong id="sum-qty">5 jars</strong></div>
+      <div class="row"><span>Delivery slot</span><strong id="sum-slot">Evening, 6–8 PM</strong></div>
+      <div class="row"><span>Payment</span><strong>On delivery</strong></div>
+      <p class="summary-note">Your rate is confirmed by our team on WhatsApp — bulk orders are always negotiable. First order of a returnable jar includes a one-time refundable deposit.</p>
     </aside>
   </div>
 </section>

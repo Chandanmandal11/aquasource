@@ -13,9 +13,9 @@ No build step, no dependencies — pure HTML, CSS and JS.
    except the Google Maps embed on the Contact page will still work.)
 
 ## Pages
-- `index.html` — Home: hero (real plant photo), how-it-works, plant photo gallery, pricing preview, area checker, testimonials
-- `products.html` — Full pricing incl. bulk rate table, deposit policy, corporate/bulk enquiry form
-- `order.html` — Order form with live price summary + "Send order via WhatsApp" button
+- `index.html` — Home: hero (real plant photo), how-it-works, plant photo gallery, product panel, area checker, testimonials
+- `products.html` — The 20L jar, bulk rate table, deposit policy, corporate/bulk enquiry form
+- `order.html` — Order form (20L jars, minimum 5) + "Send order via WhatsApp" button
 - `about.html` — Purification process, certifications/quality section, plant photo
 - `contact.html` — Contact details, map, contact form
 
@@ -25,33 +25,46 @@ No build step, no dependencies — pure HTML, CSS and JS.
 - Name: **Aqua Nirmal Quality Khane Pani (Pra.) Limited**
 - Registration: **11541/074**, Gokarneshwor Municipality, Ward 8, Kathmandu
 - Photos: real plant/product photos from your uploads, cropped (watermark
-  removed) and colour/contrast-corrected — see `assets/photos/`. Two extra
-  enhanced shots (`jar-stack-1.jpg`, `jar-stack-2.jpg`) aren't placed on any
-  page yet, in case you want to swap one in later.
+  removed) and colour/contrast-corrected — see `assets/photos/`. The two
+  jar-stack shots now carry the product panels on the homepage and the
+  products page.
+
+## What we sell — one product
+The site supplies a **single format: the 20L returnable jar**. The 1L bottle
+and 5L can were removed, along with the weekly/monthly subscription plans —
+every order is a one-time order placed over WhatsApp.
+
+**Orders have a 5-jar minimum.** It's enforced in `js/main.js` (`MIN_JARS`)
+and stated on the order form, the products page and the homepage. Change
+`MIN_JARS` and those three copy references together if the minimum moves.
+
+## Amounts are deliberately not shown on the order form
+Because the per-jar rate is negotiated by quantity, the order form shows
+**no prices and no estimated total** — the summary lists jar size, quantity,
+delivery slot and payment method only, and the WhatsApp message asks your
+team to confirm the rate. Indicative bulk rates still live on
+`products.html` where they belong.
 
 ## Bulk pricing — confirm these numbers
-I set the 20L jar rate as a negotiable, quantity-based tier since that's
-how you described it ("negotiable, bigger quantity, Rs 30–50/jar"):
+The 20L rate is a negotiable, quantity-based tier, as you described it
+("negotiable, bigger quantity, Rs 30–50/jar"):
 
 | Quantity | Rate/jar |
 |---|---|
-| 1–9 jars | Rs 70 |
+| 5–9 jars | Rs 70 |
 | 10–29 jars | Rs 50 |
 | 30–49 jars | Rs 40 |
 | 50+ jars | Rs 30 |
 
 **These exact breakpoints are my best guess at a sensible curve landing
-inside your Rs 30–50 range — not numbers you gave me.** Edit them in
-`js/main.js` (the `JAR_20L_TIERS` array near the top) and update the
-matching numbers in `products.html`, `order.html`, and `index.html`
-wherever a price is shown, before you publish this site. 5L (Rs 30) and
-1L (Rs 15) prices are placeholders too — confirm both.
+inside your Rs 30–50 range — not numbers you gave me.** They're displayed
+in `products.html` only; edit them there before you publish.
 
 ## Other things to personalize
 - `serviceAreas` in `js/main.js` (`BUSINESS` object) — replace the sample
   tole/area list with your real delivery coverage; it's used by the
   homepage "check your area" widget
-- Deposit amounts on `products.html` (currently placeholder Rs 300 / Rs 100)
+- Deposit amount on `products.html` (currently placeholder Rs 300)
 - Certification numbers on `about.html` (`#certs` section) — the
   Gokarneshwor Municipality registration (11541/074) is real; the
   DFTQC/NBSM certificate numbers are placeholders until you add yours
@@ -61,8 +74,9 @@ wherever a price is shown, before you publish this site. 5L (Rs 30) and
 
 ## How the order flow works right now
 The order form does **not** call a backend — it builds a WhatsApp message
-from the form fields and opens `wa.me` with it pre-filled, so orders land
-directly in your business WhatsApp. This is intentional: it needs zero
+from the form fields (name, phone, address, quantity, slot) and opens
+`wa.me` with it pre-filled, so orders land directly in your business
+WhatsApp, where you confirm the rate. This is intentional: it needs zero
 server setup and works for a door-to-door delivery business immediately.
 
 To move to a real backend later (database, admin dashboard, delivery
@@ -89,3 +103,12 @@ used to map an aquifer or watershed — instead of generic wave/droplet
 clichés, tying the graphics back to "water traced to its source."
 Palette: limestone off-white, deep slate teal, muted aqua, and a mineral
 amber accent. Headings use Fraunces (serif), body/UI uses Inter.
+
+**Motion.** Sections and cards fade and rise into view as you scroll
+(IntersectionObserver in `initMotion()`), the header frosts and lifts once
+you leave the top, the hero carries a slow aqua light drift plus a
+one-pass sheen across the photo, buttons sweep a highlight on hover, and
+the order form's jar glyph has a continuously rippling water line. All of
+it is switched off by `prefers-reduced-motion: reduce`, and the reveal
+animation is gated behind a `js` class on `<html>` so content is never
+hidden if JavaScript fails to load.

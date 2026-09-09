@@ -7,6 +7,10 @@ const BUSINESS = {
   serviceAreas: ["Gokarneshwor", "Budhanilkantha", "Chabahil", "Sundarijal", "Jorpati", "Kapan"], // sample — edit to your real delivery areas
 };
 
+// Flag JS so CSS can safely hide scroll-reveal targets — without this class
+// the content stays visible for no-JS visitors.
+document.documentElement.classList.add("js");
+
 // ===== Mobile nav toggle =====
 document.addEventListener("DOMContentLoaded", () => {
   const toggle = document.querySelector(".nav-toggle");
@@ -26,7 +30,58 @@ document.addEventListener("DOMContentLoaded", () => {
   initPincodeChecker();
   initOrderForm();
   initContactForm();
+  initMotion();
 });
+
+// ===== Motion: scroll reveals, header lift, subtle hero parallax =====
+function initMotion() {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Anything inside a .wrap that reads as a block of content gets revealed on entry.
+  const targets = document.querySelectorAll(
+    ".reveal, .section-head, .step, .plan, .quote, .cert, .photo-card, .check-card, .process-list li, .order-summary, .hero-product"
+  );
+  targets.forEach((el, i) => {
+    el.classList.add("reveal");
+    el.style.setProperty("--reveal-delay", (i % 6) * 70 + "ms");
+  });
+
+  if (reduced || !("IntersectionObserver" in window)) {
+    targets.forEach(el => el.classList.add("is-in"));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-in");
+        io.unobserve(entry.target);
+      });
+    }, { rootMargin: "0px 0px -12% 0px", threshold: 0.12 });
+    targets.forEach(el => io.observe(el));
+  }
+
+  const header = document.querySelector(".site-header");
+  if (header) {
+    const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 12);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+
+  if (!reduced) {
+    const art = document.querySelector(".hero-art");
+    if (art) {
+      let ticking = false;
+      window.addEventListener("scroll", () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const shift = Math.min(window.scrollY * 0.06, 28);
+          art.style.transform = `translateY(${shift}px)`;
+          ticking = false;
+        });
+      }, { passive: true });
+    }
+  }
+}
 
 // ===== Pincode / service-area checker =====
 function initPincodeChecker() {
@@ -51,18 +106,10 @@ function initPincodeChecker() {
   });
 }
 
-// ===== Order form: jar sizes, qty, subscription, live summary, WhatsApp handoff =====
-// 20L jar pricing is quantity-tiered and negotiable — edit these breakpoints to match your real rates.
-const JAR_20L_TIERS = [
-  { min: 50, price: 30 },
-  { min: 30, price: 40 },
-  { min: 10, price: 50 },
-  { min: 1,  price: 70 },
-];
-function price20L(qty) {
-  return JAR_20L_TIERS.find(t => qty >= t.min).price;
-}
-const FLAT_PRICES = { "5L": 30, "1L": 15 }; // smaller sizes, less bulk-driven
+// ===== Order form: 20L jars only, min 5, live summary, WhatsApp handoff =====
+// Pricing is negotiated per order on WhatsApp, so no amounts are shown on the site.
+const MIN_JARS = 5;
+const MAX_JARS = 200;
 
 function initOrderForm() {
   const form = document.getElementById("order-form");
@@ -70,46 +117,45 @@ function initOrderForm() {
 
   const qtyDisplay = document.getElementById("qty-value");
   const qtyInput = document.getElementById("qty-hidden");
-  let qty = 1;
+  const minus = document.getElementById("qty-minus");
+  const plus = document.getElementById("qty-plus");
+  const note = document.getElementById("qty-note");
+  const slot = document.getElementById("o-slot");
+  let qty = MIN_JARS;
 
-  document.getElementById("qty-minus").addEventListener("click", () => {
-    qty = Math.max(1, qty - 1);
-    qtyDisplay.textContent = qty;
-    qtyInput.value = qty;
-    updateSummary();
-  });
-  document.getElementById("qty-plus").addEventListener("click", () => {
-    qty = Math.min(50, qty + 1);
-    qtyDisplay.textContent = qty;
-    qtyInput.value = qty;
-    updateSummary();
-  });
-
-  form.querySelectorAll('input[name="jarSize"], input[name="frequency"]').forEach(el =>
-    el.addEventListener("change", updateSummary)
-  );
-
-  function currentSize() {
-    return form.querySelector('input[name="jarSize"]:checked')?.value || "20L";
+  function setQty(next) {
+    const clamped = Math.min(MAX_JARS, Math.max(MIN_JARS, next));
+    const hitFloor = next < MIN_JARS;
+    if (clamped !== qty) {
+      qty = clamped;
+      qtyDisplay.textContent = qty;
+      qtyDisplay.classList.remove("bump");
+      void qtyDisplay.offsetWidth; // restart the bump animation
+      qtyDisplay.classList.add("bump");
+      qtyInput.value = qty;
+      updateSummary();
+    }
+    // The minus button stays clickable at the floor so a tap explains the
+    // 5-jar minimum instead of silently doing nothing.
+    minus.classList.toggle("at-limit", qty <= MIN_JARS);
+    plus.disabled = qty >= MAX_JARS;
+    if (hitFloor && note) {
+      note.classList.remove("nudge");
+      void note.offsetWidth;
+      note.classList.add("nudge");
+    }
   }
-  function currentFreq() {
-    return form.querySelector('input[name="frequency"]:checked')?.value || "one-time";
-  }
+
+  minus.addEventListener("click", () => setQty(qty - 1));
+  plus.addEventListener("click", () => setQty(qty + 1));
+  if (slot) slot.addEventListener("change", updateSummary);
 
   function updateSummary() {
-    const size = currentSize();
-    const unit = size === "20L" ? price20L(qty) : FLAT_PRICES[size];
-    const subtotal = unit * qty;
-    const freq = currentFreq();
-    const discount = freq === "weekly" ? 0.1 : freq === "monthly" ? 0.05 : 0;
-    const total = Math.round(subtotal * (1 - discount));
-
-    document.getElementById("sum-size").textContent = size;
-    document.getElementById("sum-qty").textContent = qty;
-    document.getElementById("sum-unit").textContent = "Rs " + unit + (size === "20L" ? " (negotiable)" : "");
-    document.getElementById("sum-freq").textContent = freq === "one-time" ? "One-time" : freq[0].toUpperCase() + freq.slice(1) + " subscription";
-    document.getElementById("sum-total").textContent = "~Rs " + total;
+    document.getElementById("sum-qty").textContent = qty + (qty === 1 ? " jar" : " jars");
+    const slotEl = document.getElementById("sum-slot");
+    if (slotEl && slot) slotEl.textContent = slot.value;
   }
+  setQty(MIN_JARS);
   updateSummary();
 
   form.addEventListener("submit", (e) => {
@@ -117,23 +163,15 @@ function initOrderForm() {
     if (!form.checkValidity()) { form.reportValidity(); return; }
 
     const data = new FormData(form);
-    const name = data.get("name");
-    const addr = data.get("address");
-    const pincode = data.get("pincode");
-    const phone = data.get("phone");
-    const size = currentSize();
-    const freq = currentFreq();
-    const total = document.getElementById("sum-total").textContent;
-
     const msg =
       `New order — ${BUSINESS.name}\n` +
-      `Name: ${name}\n` +
-      `Phone: ${phone}\n` +
-      `Address: ${addr} (${pincode})\n` +
-      `Jar size: ${size}\n` +
-      `Quantity: ${qty}\n` +
-      `Plan: ${freq}\n` +
-      `Est. total: ${total}`;
+      `Name: ${data.get("name")}\n` +
+      `Phone: ${data.get("phone")}\n` +
+      `Address: ${data.get("address")} (${data.get("pincode")})\n` +
+      `Jar size: 20L\n` +
+      `Quantity: ${qty} jars\n` +
+      `Delivery slot: ${data.get("slot")}\n` +
+      `Please confirm the rate for this quantity.`;
 
     window.open(`https://wa.me/${BUSINESS.whatsappNumber}?text=${encodeURIComponent(msg)}`, "_blank");
   });
