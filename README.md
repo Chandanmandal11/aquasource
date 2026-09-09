@@ -154,7 +154,14 @@ CSS 3D — no images, no libraries, no build step. `initJars3D()` in
 - **Droplets and bubbles** sit at different `translateZ` depths, so they
   separate from the jar as the scene tilts.
 
-Sizing is a single custom property: `--jar-scale` on `.jar3d`.
+A soft ellipse at the base (`.jar3d-foot`) gives the cylinder a rounded
+bottom edge — the base disc is edge-on at this viewing angle, so without it
+the jar reads as cut off flat.
+
+Sizing is a single custom property: `--jar-scale` on `.jar3d`. Jars appear
+in the homepage hero and dashboard, on the order form, and standing in the
+empty half of the hero band on the products, about and contact pages
+(`.page-hero-jar`, hidden below 900px where there is no room).
 
 ## Motion
 All of it is switched off by `prefers-reduced-motion: reduce`, and the
@@ -173,3 +180,7 @@ hidden if JavaScript fails to load.
 - Hero and page heroes carry a slow aqua light drift; buttons sweep a
   highlight; cards lift with their photos scaling
 - Dashboard figures count up when the panel scrolls into view
+
+On narrow screens the hero stacks: the plant photo spans the full width and
+the jar stands centred in front of it, rather than the two being squeezed
+side by side.

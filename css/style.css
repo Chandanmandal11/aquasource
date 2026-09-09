@@ -179,7 +179,6 @@ nav.main-nav a:hover, nav.main-nav a.active{ border-bottom-color: var(--aqua-bri
 .hero-stats div strong{ display:block; font-family: var(--serif); font-size:1.6rem; color:var(--white); }
 .hero-stats div span{ font-size:.78rem; color: rgba(255,255,255,.6); }
 .hero-art{ position:relative; }
-.hero-art svg{ width:100%; height:auto; }
 
 /* ---------- sections ---------- */
 section{ padding: 5.5em 0; }
@@ -266,7 +265,6 @@ footer a:hover{ color: var(--aqua-bright); }
 .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap: 3.4em; align-items:center; }
 .cert-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap: 1.4em; }
 .cert-grid img{ width:100%; height:220px; object-fit:cover; display:block; }
-.hero-art img{ width:100%; height:auto; object-fit:cover; display:block; aspect-ratio: 4/3; }
 .photo-card{ border-radius:4px; overflow:hidden; border:1px solid var(--line); }
 .photo-card img{ width:100%; height:260px; object-fit:cover; display:block; }
 .cert{ text-align:center; padding: 1.6em 1em; border:1px solid var(--line); border-radius:4px; background:var(--white); }
@@ -291,7 +289,7 @@ footer a:hover{ color: var(--aqua-bright); }
 
 @media (max-width: 980px){
   .hero .wrap{ grid-template-columns:1fr; }
-  .hero-art{ order:-1; max-width: 320px; }
+  .hero-art{ order:-1; }
   .steps{ grid-template-columns: repeat(2,1fr); }
   .quotes{ grid-template-columns:1fr; }
   .cert-grid{ grid-template-columns: repeat(2,1fr); }
@@ -389,19 +387,6 @@ nav.main-nav a:hover::after, nav.main-nav a.active::after{ transform: scaleX(1);
   to  { transform: translate3d(3%, 2%, 0) scale(1.08); }
 }
 .hero h1{ text-wrap: balance; }
-.hero-art{ transition: transform .2s linear; }
-.hero-art img{ transition: transform 1.2s var(--ease); }
-.hero-art:hover img{ transform: scale(1.03); }
-.hero-art::after{
-  content:''; position:absolute; inset:0; pointer-events:none;
-  background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.22) 50%, transparent 65%);
-  transform: translateX(-130%);
-  animation: sheen 7s var(--ease) 1.4s infinite;
-}
-@keyframes sheen{
-  0%{ transform: translateX(-130%); }
-  32%,100%{ transform: translateX(130%); }
-}
 .hero-stats div strong{
   background: linear-gradient(120deg, var(--white), var(--aqua-pale));
   -webkit-background-clip: text; background-clip: text; color: transparent;
@@ -560,7 +545,7 @@ footer{ background: var(--grad-aqua); }
 .jar3d-scene{
   position:absolute; inset:0;
   transform-style: preserve-3d;
-  transform: rotateX(-7deg);
+  transform: rotateX(-10deg);
 }
 .jar3d-spin{
   position:absolute; left:50%; top: 10px; margin-left: -62px;
@@ -699,6 +684,18 @@ footer{ background: var(--grad-aqua); }
   100% { opacity:0; transform: translateZ(44px) scale(calc(var(--s) * 1.3)) translateY(-84px); }
 }
 
+/* rounded base edge, matching the body's lighting */
+.jar3d-foot{
+  position:absolute; left:50%; margin-left:-60px; top: 238px;
+  width:120px; height: 24px; border-radius: 50%;
+  background:
+    linear-gradient(90deg, rgba(4,32,42,.55) 0%, rgba(124,211,228,.30) 26%,
+                    rgba(214,242,248,.22) 44%, rgba(27,127,151,.24) 70%,
+                    rgba(4,32,42,.55) 100%);
+  box-shadow: inset 0 2px 4px -1px rgba(255,255,255,.35);
+  transform: translateZ(2px);
+}
+
 /* contact shadow on the ground plane */
 .jar3d-shadow{
   position:absolute; left:50%; bottom: 2px; width: 128px; height: 20px; margin-left:-64px;
@@ -727,6 +724,10 @@ footer{ background: var(--grad-aqua); }
 
 /* cards get a gentler version of the same treatment */
 .tilt-card{ transform-style: preserve-3d; }
+
+/* the scroll parallax nudges .hero-art; keep it snappy and out of the way of
+   the pointer tilt, which sets its own transition on [data-tilt] */
+.hero-art{ will-change: transform; }
 
 /* ---------- hero composition ----------
    Three layers at different depths: the plant photo sits back and left, a
@@ -764,8 +765,17 @@ footer{ background: var(--grad-aqua); }
   .hero-3d-photo{ width: 62%; }
   .hero-3d .jar3d{ --jar-scale: .88; }
 }
+}
 
 .product-lock-art .jar3d{ --jar-scale: .58; margin: -34px -20px; }
+
+/* a jar standing in the empty half of an inner page's hero band */
+.page-hero-jar{
+  position:absolute; right: 7%; bottom: 0;
+  filter: drop-shadow(0 20px 28px rgba(4,32,42,.5));
+}
+.page-hero-jar .jar3d{ --jar-scale: .66; }
+@media (max-width: 900px){ .page-hero-jar{ display:none; } }
 
 /* ---------- dashboard ---------- */
 .dash-section{ background: var(--grad-aqua); position:relative; overflow:hidden; }
@@ -883,3 +893,14 @@ footer{ background: var(--grad-aqua); }
   .dash-grid{ grid-template-columns: 1fr; }
   .jar3d{ --jar-scale: .82; }
 }
+
+/* narrow screens: stack the photo across the top and stand the jar centred
+   in front of it, rather than squeezing both side by side */
+@media (max-width: 640px){
+  .hero-3d{ min-height: 330px; }
+  .hero-3d-photo{ left:0; top:0; width:100%; height: 58%; }
+  .hero-3d-glow{ right:auto; left:50%; margin-left:-150px; bottom:0; }
+  .hero-3d-jar{ right:auto; left:50%; margin-left:-75px; bottom:0; }
+  .hero-3d .jar3d{ --jar-scale: .82; }
+  .hero-stats{ gap: 1.3em; margin-top: 2.2em; padding-top: 1.5em; }
+  .hero-stats div strong{ font-size: 1.25rem; }

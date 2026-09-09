@@ -217,7 +217,9 @@ function initJars3D() {
       drops.appendChild(b);
     }
 
-    scene.append(spin, top, shade, light, drops);
+    // A soft ellipse at the base. The base disc is edge-on at this viewing
+    // angle, so without it the cylinder reads as cut off flat.
+    scene.append(spin, top, el("jar3d-foot"), shade, light, drops);
     mount.append(scene, el("jar3d-shadow"));
   });
 }
