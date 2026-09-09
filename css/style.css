@@ -907,3 +907,26 @@ footer{ background: var(--grad-deep); }
   .hero-3d .jar3d{ --jar-scale: .82; }
   .hero-stats{ gap: 1.3em; margin-top: 2.2em; padding-top: 1.5em; }
   .hero-stats div strong{ font-size: 1.25rem; }
+
+/* The off-canvas mobile nav is position:fixed against the viewport, but a
+   backdrop-filter on an ancestor makes that ancestor the containing block for
+   fixed descendants — which collapsed the open menu to the height of the
+   header. The header's frosting is therefore desktop-only; below the nav
+   breakpoint it goes fully opaque instead. This has to sit after the frosting
+   rule to win, so it lives at the end of the file. */
+@media (max-width: 880px){
+  .site-header, .site-header.is-scrolled{
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--foam);
+  }
+}
+
+/* Very narrow phones: the brand lockup and the CTA collide in the header, so
+   drop the tagline and tighten the button. */
+@media (max-width: 430px){
+  .brand-tag{ display:none; }
+  .brand-name{ font-size: 1.1rem; }
+  .header-cta{ gap: .9em; }
+  .header-cta .btn-primary{ padding: .7em 1.05em; font-size: .86rem; }
+}
