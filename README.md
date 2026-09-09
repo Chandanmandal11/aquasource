@@ -124,6 +124,15 @@ The visual identity is built around the contour line — the same lines
 used to map an aquifer or watershed — instead of generic wave/droplet
 clichés, tying the graphics back to "water traced to its source."
 
+**Contrast.** Every text/background pair is checked at 4.5:1 (WCAG AA for
+small text), measured against the *lightest* stop of whatever gradient sits
+behind the text, so it holds everywhere on that surface. That is why
+text-heavy dark surfaces (footer, order summary, coverage card) use
+`--grad-deep` rather than `--grad-aqua`, which runs light enough at its far
+stop to drop small text under the threshold. `--aqua-bright` is a graphic
+colour only — white text on it lands at 2.8:1, so the CTA gradient starts
+from a deeper aqua instead.
+
 **Palette — all aqua.** Deep ocean darks (`--abyss`, `--deep`, `--teal`),
 an aqua ramp for accents and CTAs (`--aqua`, `--aqua-bright`,
 `--aqua-light`, `--aqua-pale`) and a pale foam page ground (`--foam`,

@@ -30,11 +30,14 @@
   --ink:         #06222B;
   --line:        #BEDEE6;
   --muted:       #47707B;
-  --muted-soft:  #628C97;
+  --muted-soft:  #4B7480;
 
   --grad-aqua:   linear-gradient(140deg, #04202A 0%, #0E4A5B 46%, #1B7F97 100%);
-  --grad-cta:    linear-gradient(135deg, #29A8C4 0%, #12657A 100%);
+  --grad-cta:    linear-gradient(135deg, #16809A 0%, #0E5A6E 100%);
   --grad-glass:  linear-gradient(160deg, rgba(255,255,255,.55), rgba(255,255,255,.06));
+  /* --grad-aqua runs light enough at its far stop that small text on it can
+     fall under 4.5:1, so text-heavy dark surfaces use this deeper ramp */
+  --grad-deep:   linear-gradient(150deg, #04202A 0%, #07303D 58%, #0E4A5B 100%);
 
   --shadow-sm:   0 2px 10px -4px rgba(6,34,43,.20);
   --shadow-md:   0 20px 40px -26px rgba(6,34,43,.55);
@@ -247,7 +250,7 @@ footer a{ text-decoration:none; color:inherit; }
 footer a:hover{ color: var(--aqua-bright); }
 .footer-bottom{
   border-top: 1px solid rgba(255,255,255,.12); padding: 1.6em 28px;
-  display:flex; justify-content:space-between; font-size:.8rem; color: rgba(255,255,255,.5);
+  display:flex; justify-content:space-between; font-size:.8rem; color: rgba(255,255,255,.72);
 }
 
 .wa-float{
@@ -485,18 +488,18 @@ input, select, textarea{ transition: border-color .3s var(--ease), box-shadow .3
 @keyframes nudge{ 25%{ transform: translateX(-5px); } 60%{ transform: translateX(4px); } }
 
 .order-summary{
-  background: var(--grad-aqua); color: var(--white);
+  background: var(--grad-deep); color: var(--white);
   box-shadow: var(--shadow-md); border-radius: 8px; padding: 1.9em 1.9em 1.7em;
 }
 .order-summary h3{ color: var(--white); }
 .order-summary .row{ border-top-color: rgba(255,255,255,.16); color: rgba(255,255,255,.72); }
 .order-summary .row strong{ color: var(--white); }
-.summary-note{ font-size:.8rem; color: rgba(255,255,255,.62); margin: 1.2em 0 0; }
+.summary-note{ font-size:.8rem; color: rgba(255,255,255,.82); margin: 1.2em 0 0; }
 
 /* ---------- misc polish ---------- */
 .quote{ transition: transform .5s var(--ease), box-shadow .5s var(--ease); }
 .quote:hover{ transform: translateY(-4px); box-shadow: var(--shadow-md); }
-.check-card{ background: var(--grad-aqua); box-shadow: var(--shadow-md); position:relative; overflow:hidden; }
+.check-card{ background: var(--grad-deep); box-shadow: var(--shadow-md); position:relative; overflow:hidden; }
 .check-card::before{
   content:''; position:absolute; right:-12%; top:-40%; width:60%; height:180%;
   background: radial-gradient(circle at center, var(--aqua-glow), transparent 68%);
@@ -512,7 +515,7 @@ input, select, textarea{ transition: border-color .3s var(--ease), box-shadow .3
   background: radial-gradient(circle at center, var(--aqua-glow), transparent 66%);
   animation: drift 20s ease-in-out infinite alternate;
 }
-footer{ background: var(--grad-aqua); }
+footer{ background: var(--grad-deep); }
 
 /* order page: give the form room, keep the summary a slim companion */
 #order-section .two-col{ grid-template-columns: 1.35fr .78fr; gap: 2.6em; }
@@ -841,7 +844,7 @@ footer{ background: var(--grad-aqua); }
   font-family: var(--serif); font-size: 2.1rem; color: var(--white); line-height:1.1;
   font-variant-numeric: tabular-nums;
 }
-.dash-sub{ font-size:.8rem; color: rgba(255,255,255,.6); }
+.dash-sub{ font-size:.8rem; color: rgba(255,255,255,.72); }
 .dash-jar{
   align-items:center; justify-content:center; padding: 1.2em;
   background: rgba(6,34,43,.28);
@@ -878,7 +881,7 @@ footer{ background: var(--grad-aqua); }
 }
 
 .dash-foot{
-  padding: 1em 1.9em; font-size:.78rem; color: rgba(255,255,255,.55);
+  padding: 1em 1.9em; font-size:.78rem; color: rgba(255,255,255,.72);
   border-top: 1px solid rgba(255,255,255,.12);
   display:flex; justify-content:space-between; gap:1em; flex-wrap:wrap;
 }
