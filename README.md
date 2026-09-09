@@ -13,7 +13,7 @@ No build step, no dependencies — pure HTML, CSS and JS.
    except the Google Maps embed on the Contact page will still work.)
 
 ## Pages
-- `index.html` — Home: hero (real plant photo), how-it-works, plant photo gallery, product panel, area checker, testimonials
+- `index.html` — Home: 3D hero, company dashboard panel, how-it-works, plant photo gallery, product panel, area checker, testimonials
 - `products.html` — The 20L jar, bulk rate table, deposit policy, corporate/bulk enquiry form
 - `order.html` — Order form (20L jars, minimum 5) + "Send order via WhatsApp" button
 - `about.html` — Purification process, certifications/quality section, plant photo
@@ -60,6 +60,28 @@ The 20L rate is a negotiable, quantity-based tier, as you described it
 inside your Rs 30–50 range — not numbers you gave me.** They're displayed
 in `products.html` only; edit them there before you publish.
 
+## The homepage dashboard — set your real numbers
+The panel under the hero is branded with the company name and shows three
+figures. Two are derived from real config and stay correct on their own:
+
+- **Purification stages (7)** — matches the process listed on `about.html`
+- **Service areas** — the count and the chips are both generated from
+  `BUSINESS.serviceAreas` in `js/main.js`, so they can never disagree
+
+**"Jars delivered today" is a placeholder and is shown to customers as your
+delivery figure.** It lives in `BUSINESS.dashboard` in `js/main.js`:
+
+```js
+dashboard: {
+  jarsToday: 128,                             // today's figure
+  last7Days: [64, 92, 71, 118, 99, 143, 128], // the little bar chart
+}
+```
+
+Nothing measures this automatically — there is no backend. Put your real
+numbers there, or delete that tile from `index.html`, before you publish.
+The "updated HH:MM" clock in the panel header is a genuine live clock.
+
 ## Other things to personalize
 - `serviceAreas` in `js/main.js` (`BUSINESS` object) — replace the sample
   tole/area list with your real delivery coverage; it's used by the
@@ -101,14 +123,53 @@ aquasource/
 The visual identity is built around the contour line — the same lines
 used to map an aquifer or watershed — instead of generic wave/droplet
 clichés, tying the graphics back to "water traced to its source."
-Palette: limestone off-white, deep slate teal, muted aqua, and a mineral
-amber accent. Headings use Fraunces (serif), body/UI uses Inter.
 
-**Motion.** Sections and cards fade and rise into view as you scroll
-(IntersectionObserver in `initMotion()`), the header frosts and lifts once
-you leave the top, the hero carries a slow aqua light drift plus a
-one-pass sheen across the photo, buttons sweep a highlight on hover, and
-the order form's jar glyph has a continuously rippling water line. All of
-it is switched off by `prefers-reduced-motion: reduce`, and the reveal
-animation is gated behind a `js` class on `<html>` so content is never
+**Palette — all aqua.** Deep ocean darks (`--abyss`, `--deep`, `--teal`),
+an aqua ramp for accents and CTAs (`--aqua`, `--aqua-bright`,
+`--aqua-light`, `--aqua-pale`) and a pale foam page ground (`--foam`,
+`--mist`). Every token is defined once at the top of `css/style.css`; the
+logo and contour SVGs in `assets/` were retinted to match. Headings use
+Fraunces (serif), body/UI uses Inter.
+
+## The 3D jars
+The jars on the homepage, in the dashboard and on the order form are real
+CSS 3D — no images, no libraries, no build step. `initJars3D()` in
+`js/main.js` builds each one:
+
+- The **body** is a true cylinder: 28 flat panels ("staves") fanned around
+  the Y axis with `rotateY(...) translateZ(radius)`, inside a
+  `transform-style: preserve-3d` group that spins continuously. The panel
+  count, radius and taper live in `JAR_BODY`.
+- The **water** is a child of each stave. Its height animates with a phase
+  offset per panel, so the surface travels around the jar as one wave
+  rather than every panel pulsing together.
+- The **cap, neck and shoulder** are surfaces of revolution — they look
+  identical at every angle — so they are shaded static geometry rather than
+  spinning panels, which is both cheaper and free of the overlap artefacts
+  that spinning translucent panels produce. The shoulder taper is a
+  `clip-path` trapezoid.
+- **Lighting does not spin.** The shading and specular highlights sit in
+  their own layer over the top, so the glass keeps a fixed highlight while
+  the jar turns underneath — the way real glass behaves.
+- **Droplets and bubbles** sit at different `translateZ` depths, so they
+  separate from the jar as the scene tilts.
+
+Sizing is a single custom property: `--jar-scale` on `.jar3d`.
+
+## Motion
+All of it is switched off by `prefers-reduced-motion: reduce`, and the
+scroll reveal is gated behind a `js` class on `<html>` so content is never
 hidden if JavaScript fails to load.
+
+- Sections and cards rise into view on scroll (IntersectionObserver in
+  `initMotion()`), with a scroll sweep as a safety net so a jump — an
+  anchor link, or the browser restoring a scroll position — can't leave a
+  block stuck invisible
+- `[data-tilt]` elements rotate toward the cursor in real 3D, and their
+  `[data-depth]` children lift out of the plane: the hero's photo, glow and
+  jar separate into three layers as you move the mouse. Pointer devices
+  only, so it never interferes with touch
+- The header frosts and lifts once you leave the top; nav underlines wipe in
+- Hero and page heroes carry a slow aqua light drift; buttons sweep a
+  highlight; cards lift with their photos scaling
+- Dashboard figures count up when the panel scrolls into view
