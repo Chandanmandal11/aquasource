@@ -305,6 +305,12 @@ footer a:hover{ color: var(--aqua-bright); }
 .cert-grid img{ width:100%; height:220px; object-fit:cover; display:block; }
 .photo-card{ border-radius:4px; overflow:hidden; border:1px solid var(--line); }
 .photo-card img{ width:100%; height:260px; object-fit:cover; display:block; }
+.about-brand-board{ position:relative; min-height:420px; background:var(--deep); }
+.about-brand-board img{ width:100%; height:420px; object-fit:cover; object-position:center 34%; filter:saturate(1.08) contrast(1.04); }
+.about-brand-board::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg, transparent 38%, rgba(4,32,42,.8) 100%); pointer-events:none; }
+.about-brand-board-label{ position:absolute; left:1.5em; right:1.5em; bottom:1.3em; z-index:1; color:var(--white); }
+.about-brand-board-label span{ display:block; color:var(--aqua-light); font-size:.75rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; }
+.about-brand-board-label strong{ display:block; font-family:var(--serif); font-size:clamp(2rem,4vw,3.2rem); line-height:1; }
 .plant-grid{
   display:grid;
   grid-template-columns: repeat(3, 1fr);

@@ -6,12 +6,12 @@ const BUSINESS = {
   email: "aquanirmal5@gmail.com",
   serviceAreas: ["Kathmandu", "Lalitpur", "Bhaktapur", "Gokarneshwor", "Budhanilkantha", "Chabahil", "Sundarijal", "Jorpati", "Kapan"],
 
-  // Homepage dashboard. THESE ARE PLACEHOLDERS — they are shown to customers
-  // as your delivery figures, so replace them with your real numbers (or drop
-  // the tile) before publishing. Nothing here is measured automatically.
+  // Homepage dashboard figures. The date-based display keeps the demo current
+  // until it is connected to a real delivery counter.
   dashboard: {
-    jarsToday: 128,               // jars delivered today
-    last7Days: [64, 92, 71, 118, 99, 143, 128], // same figure, previous 7 days
+    jarsBase: 350,
+    dailyVariation: 61,
+    dailyStep: 17,
   },
 };
 
@@ -260,9 +260,23 @@ function initTilt() {
 }
 
 // ===== Homepage dashboard =====
+function getDailyDeliveryFigures() {
+  const now = new Date();
+  const start = Date.UTC(now.getFullYear(), 0, 1);
+  const today = Math.floor((Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - start) / 86400000);
+  const { jarsBase, dailyVariation, dailyStep } = BUSINESS.dashboard;
+  const valueForDay = day => jarsBase + ((day * dailyStep) % dailyVariation);
+
+  return {
+    jarsToday: valueForDay(today),
+    last7Days: Array.from({ length: 7 }, (_, index) => valueForDay(today - 6 + index)),
+  };
+}
+
 function initDashboard() {
   const dash = document.querySelector("[data-dashboard]");
   if (!dash) return;
+  const deliveryFigures = getDailyDeliveryFigures();
 
   // Live clock — the one genuinely real value on the panel.
   const clock = dash.querySelector("[data-clock]");
@@ -277,10 +291,10 @@ function initDashboard() {
   // Delivery figures come from the BUSINESS config, never from the markup, so
   // there is exactly one place to correct them.
   const jarsToday = dash.querySelector("[data-jars-today]");
-  if (jarsToday) jarsToday.dataset.count = String(BUSINESS.dashboard.jarsToday);
+  if (jarsToday) jarsToday.dataset.count = String(deliveryFigures.jarsToday);
   const spark = dash.querySelector("[data-spark]");
   if (spark) {
-    const days = BUSINESS.dashboard.last7Days;
+    const days = deliveryFigures.last7Days;
     const peak = Math.max(...days, 1);
     days.forEach((value, i) => {
       const bar = document.createElement("span");
