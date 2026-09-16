@@ -1246,6 +1246,7 @@ footer{ background: var(--grad-deep); }
   .hero-3d .jar3d{ --jar-scale: .82; }
   .hero-stats{ gap: 1.3em; margin-top: 2.2em; padding-top: 1.5em; }
   .hero-stats div strong{ font-size: 1.25rem; }
+}
 
 /* The off-canvas mobile nav is position:fixed against the viewport, but a
    backdrop-filter on an ancestor makes that ancestor the containing block for
@@ -1268,4 +1269,50 @@ footer{ background: var(--grad-deep); }
   .brand-name{ font-size: 1.1rem; }
   .header-cta{ gap: .9em; }
   .header-cta .btn-primary{ padding: .7em 1.05em; font-size: .86rem; }
+}
+
+@media (max-width: 640px){
+  .wrap{ padding-left: 18px; padding-right: 18px; }
+  .site-header .wrap{ height: 68px; }
+  nav.main-nav{ inset: 68px 0 0; padding: 1.5em 18px; }
+  .header-cta .btn-primary{ white-space: nowrap; }
+
+  section{ padding: 3.8em 0; }
+  .page-hero{ padding: 2.8em 0 2.4em; }
+  .page-hero h1{ font-size: 2.15rem; }
+  .hero .wrap{ padding-top: 3.2em; padding-bottom: 3.4em; }
+  .hero h1{ font-size: 2.45rem; }
+  .hero p.lede{ font-size: 1rem; }
+  .hero-actions{ flex-direction: column; align-items: stretch; }
+  .hero-actions .btn, form > .btn, .check-form .btn{ justify-content:center; width:100%; }
+  .hero-stats{ display:grid; grid-template-columns: 1fr 1fr; gap: 1em; }
+  .hero-stats div:last-child{ grid-column: 1 / -1; }
+
+  .section-head{ margin-bottom: 1.8em; }
+  .section-head h2{ font-size: 1.85rem; }
+  .steps, .quotes, .plant-grid, .cert-grid{ grid-template-columns: 1fr; }
+  .plant-card-img{ height: 200px; }
+  .two-col, .contact-grid, .form-grid{ grid-template-columns: 1fr; }
+  .form-grid .full{ grid-column: auto; }
+  .check-card{ padding: 1.5em; }
+  .check-form{ flex-direction: column; }
+  .check-form input{ width:100%; }
+
+  .hero-product-main{ padding: 1.8em 1.25em; }
+  .hero-product-art{ min-height: 200px; }
+  .product-lock-inner{ gap: .7em; }
+  fieldset{ padding: 1.1em; }
+  .qty-control{ justify-content:flex-start; }
+  .order-summary{ padding: 1.4em; }
+
+  .dashboard{ border-radius: 8px; }
+  .dash-head, .dash-foot{ padding-left: 1.1em; padding-right: 1.1em; }
+  .dash-status{ font-size: .72rem; }
+  .dash-brand .dash-name{ font-size: 1.25rem; }
+  .dash-brand .dash-tag{ font-size: .55rem; }
+  .dash-tile{ padding: 1.25em; }
+
+  footer .wrap{ grid-template-columns: 1fr; gap: 1.8em; padding-top: 3em; }
+  .footer-bottom{ flex-direction:column; gap:.5em; padding-left:18px; padding-right:18px; }
+  .wa-float{ right: 14px; bottom: 14px; width: 50px; height: 50px; }
 }
