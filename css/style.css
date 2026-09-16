@@ -1018,32 +1018,89 @@ footer{ background: var(--grad-deep); }
 
 @media (max-width: 980px){
   .hero-3d{
-    width:100%;
-    min-height:370px;
-    margin-bottom:.5em;
+    width: 100%;
+    min-height: 310px;
+    margin-bottom: 1.2em;
+    position: relative;
   }
   .hero-3d-photo{
-    left:0;
-    top:0;
-    width:100%;
-    height:250px;
+    left: 0;
+    top: 0;
+    width: 78%;
+    max-width: 330px;
+    height: 220px;
+    border-radius: 8px;
   }
   .hero-3d-glow{
-    right:50%;
-    bottom:0;
-    transform:translateX(50%);
-    width:260px;
-    height:260px;
+    right: 8%;
+    bottom: 0;
+    transform: none;
+    width: 210px;
+    height: 210px;
   }
   .hero-3d-jar{
-    left:50%;
-    right:auto;
-    bottom:0;
-    width:150px;
-    margin-left:-75px;
-    transform:none;
+    right: 2%;
+    left: auto;
+    bottom: -8px;
+    width: auto;
+    margin-left: 0;
+    transform: none;
   }
-  .hero-3d .jar3d{ --jar-scale:.78; }
+  .real-jar-stage{
+    width: 155px;
+    height: 220px;
+  }
+  .real-jar-ripple{
+    width: 120px;
+    height: 20px;
+    margin-left: -60px;
+    bottom: -4px;
+  }
+  .real-jar-chip{
+    top: 6px;
+    right: -2px;
+    font-size: .65rem;
+    padding: .22em .6em;
+  }
+  .real-jar-chip-bottom{
+    bottom: 10px;
+    left: -10px;
+    font-size: .62rem;
+    padding: .2em .55em;
+  }
+}
+
+@media (max-width: 480px){
+  .hero-3d{
+    min-height: 280px;
+    margin-bottom: 1em;
+  }
+  .hero-3d-photo{
+    width: 76%;
+    max-width: 290px;
+    height: 195px;
+  }
+  .hero-3d-jar{
+    right: 0;
+    left: auto;
+    bottom: -6px;
+  }
+  .real-jar-stage{
+    width: 135px;
+    height: 195px;
+  }
+  .real-jar-chip{
+    top: 4px;
+    right: 0;
+    font-size: .6rem;
+    padding: .2em .5em;
+  }
+  .real-jar-chip-bottom{
+    bottom: 8px;
+    left: -6px;
+    font-size: .58rem;
+    padding: .18em .48em;
+  }
 }
 
 .product-lock-art .jar3d{ --jar-scale: .58; margin: -34px -20px; }
