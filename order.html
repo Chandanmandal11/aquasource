@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order — Aqua Nirmal</title>
-<meta name="description" content="Order 20L jars, 5L cans, or 1L bottles for doorstep delivery across Kathmandu with instant WhatsApp dispatch confirmation.">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,7 +11,7 @@
 <header class="site-header">
   <div class="wrap">
     <a href="index.html" class="brand">
-      <img src="assets/logo-mark.svg" class="brand-mark" alt="Aqua Nirmal Logo">
+      <img src="assets/logo-mark.svg" class="brand-mark" alt="">
       <span><span class="brand-name">Aqua Nirmal</span><span class="brand-tag">QUALITY KHANE PANI</span></span>
     </a>
     <nav class="main-nav">
@@ -33,140 +32,107 @@
 </header>
 
 <section class="page-hero">
-  <div class="water-droplets-backdrop">
-    <div class="condensation-sheen"></div>
-  </div>
-  <div class="wrap" style="position:relative; z-index:2;">
-    <div class="eyebrow-line">Online Order Desk</div>
-    <h1>Schedule your delivery in under 60 seconds.</h1>
-    <p>Fill in your address and delivery slot. Your order is formatted and sent straight to our dispatch team on WhatsApp for immediate confirmation.</p>
+  <div class="wrap">
+    <div class="eyebrow-line">Order</div>
+    <h1>Set up your delivery in under a minute.</h1>
+    <p>Fill this in and it's sent straight to our order desk on WhatsApp — you'll get a confirmation with your delivery slot and confirmed rate.</p>
   </div>
 </section>
 
 <section id="order-section">
   <div class="wrap two-col" style="align-items:start;">
-    <!-- Order Form -->
-    <form id="order-form" class="reveal-up" novalidate>
-      <fieldset>
-        <legend>1. Select Jar Size</legend>
-        <div class="form-grid">
-          <label style="display:flex;align-items:center;gap:.6em;font-weight:500;cursor:pointer;">
-            <input type="radio" name="jarSize" value="20L" checked style="width:auto;cursor:pointer;"> 20L Standard Jar — Rs 30–50
-          </label>
-          <label style="display:flex;align-items:center;gap:.6em;font-weight:500;cursor:pointer;">
-            <input type="radio" name="jarSize" value="5L" style="width:auto;cursor:pointer;"> 5L Fridge Can — Rs 30
-          </label>
-          <label style="display:flex;align-items:center;gap:.6em;font-weight:500;cursor:pointer;">
-            <input type="radio" name="jarSize" value="1L" style="width:auto;cursor:pointer;"> 1L Bottles (Pack of 12) — Rs 15/ea
-          </label>
+    <form id="order-form" novalidate>
+      <fieldset class="product-lock reveal">
+        <legend>Your jar</legend>
+        <div class="product-lock-inner">
+          <div class="product-lock-art">
+            <div data-jar3d role="img" aria-label="A 20L Aqua Nirmal jar, rotating"></div>
+          </div>
+          <div>
+            <h3>20L Returnable Jar</h3>
+            <p>Multi-stage RO + UV purified, sealed the day it's filled, and swapped at your door on every delivery.</p>
+            <span class="min-pill">Minimum order — 5 jars</span>
+          </div>
         </div>
+        <input type="hidden" name="jarSize" value="20L">
       </fieldset>
 
-      <fieldset>
-        <legend>2. Number of Jars</legend>
+      <fieldset class="reveal">
+        <legend>Quantity</legend>
         <div class="qty-control">
           <button type="button" id="qty-minus" aria-label="Decrease quantity">−</button>
-          <span id="qty-value" style="font-family:var(--serif);font-size:1.4rem;min-width:2.5ch;text-align:center;font-weight:700;color:var(--slate);">1</span>
+          <span id="qty-value">5</span>
           <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
-          <input type="hidden" id="qty-hidden" name="qty" value="1">
-          <span style="font-size:.85rem;color:#767f7c;margin-left:.5em;">(Bulk rates auto-apply for 10+ jars)</span>
+          <input type="hidden" id="qty-hidden" name="qty" value="5">
+          <span class="qty-unit">jars</span>
         </div>
+        <p id="qty-note" class="qty-note">Orders start at 5 jars. Ordering more? Our rate improves with volume — confirmed on WhatsApp.</p>
       </fieldset>
 
-      <fieldset>
-        <legend>3. Delivery Frequency</legend>
-        <div class="form-grid">
-          <label style="display:flex;align-items:center;gap:.6em;font-weight:500;cursor:pointer;">
-            <input type="radio" name="frequency" value="one-time" checked style="width:auto;cursor:pointer;"> One-time delivery
-          </label>
-          <label style="display:flex;align-items:center;gap:.6em;font-weight:500;cursor:pointer;">
-            <input type="radio" name="frequency" value="weekly" style="width:auto;cursor:pointer;"> Weekly auto-refill (10% off)
-          </label>
-          <label style="display:flex;align-items:center;gap:.6em;font-weight:500;cursor:pointer;">
-            <input type="radio" name="frequency" value="monthly" style="width:auto;cursor:pointer;"> Monthly plan (5% off)
-          </label>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend>4. Delivery Address &amp; Contact</legend>
+      <fieldset class="reveal">
+        <legend>Delivery details</legend>
         <div class="form-grid">
           <div class="full">
             <label for="o-name">Full name</label>
-            <input id="o-name" name="name" required placeholder="Your name">
+            <input id="o-name" name="name" required>
           </div>
           <div class="full">
-            <label for="o-address">Delivery address / Landmark</label>
-            <textarea id="o-address" name="address" required placeholder="House number, street, landmark or apartment"></textarea>
+            <label for="o-address">Delivery address</label>
+            <textarea id="o-address" name="address" required></textarea>
           </div>
           <div>
-            <label for="o-pincode">Neighbourhood / Tole</label>
-            <input id="o-pincode" name="pincode" placeholder="e.g. Gokarneshwor-8, Jorpati" required>
+            <label for="o-pincode">Area / Tole</label>
+            <input id="o-pincode" name="pincode" placeholder="e.g. Gokarneshwor-8" required>
           </div>
           <div>
-            <label for="o-phone">WhatsApp / Phone number</label>
-            <input id="o-phone" name="phone" type="tel" required placeholder="e.g. 98XXXXXXXX">
+            <label for="o-phone">Phone number</label>
+            <input id="o-phone" name="phone" type="tel" required>
           </div>
           <div class="full">
-            <label for="o-slot">Preferred delivery time slot</label>
+            <label for="o-slot">Preferred delivery slot</label>
             <select id="o-slot" name="slot">
-              <option>Morning (7:00 AM – 10:00 AM)</option>
-              <option>Midday (12:00 PM – 2:00 PM)</option>
-              <option selected>Evening (5:00 PM – 8:00 PM)</option>
+              <option>Morning, 7–10 AM</option>
+              <option>Midday, 12–2 PM</option>
+              <option selected>Evening, 6–8 PM</option>
             </select>
           </div>
         </div>
       </fieldset>
 
-      <button type="submit" class="btn btn-primary btn-wa" style="width:100%; padding:1em 1.5em; font-size:1.05rem;">
-        Send Order to Dispatch via WhatsApp
-      </button>
-      <p style="font-size:.85rem;color:#767f7c;margin-top:1em;text-align:center;">
-        💵 Pay by cash or Fonepay QR upon arrival. No upfront online payment required.
-      </p>
+      <button type="submit" class="btn btn-primary btn-wa">Send order via WhatsApp</button>
+      <p style="font-size:.82rem;color:var(--muted-soft);margin-top:1em;">Prefer cash or card on delivery? Choose that when our rider arrives — no online payment required to place this order.</p>
     </form>
 
-    <!-- Sticky Order Summary -->
-    <aside class="order-summary reveal-up delay-1">
-      <h3 style="margin-bottom:.8em;">Order Summary</h3>
-      <div class="row"><span>Selected size</span><strong id="sum-size">20L</strong></div>
-      <div class="row"><span>Quantity</span><strong id="sum-qty">1</strong></div>
-      <div class="row"><span>Unit price</span><strong id="sum-unit">Rs 70 (negotiable)</strong></div>
-      <div class="row"><span>Delivery plan</span><strong id="sum-freq">One-time</strong></div>
-      <div class="row total"><span>Estimated total</span><strong id="sum-total">~Rs 70</strong></div>
-      
-      <div style="margin-top:1.4em; padding-top:1.2em; border-top:1px solid var(--line); font-size:.82rem; color:#626c69; line-height:1.5;">
-        <p style="margin-bottom:.6em;"><strong>Free empty jar swap:</strong> If you already have standard 20L jars, our rider swaps them at Rs 0 deposit.</p>
-        <p style="margin:0;">First-time orders without an empty jar include a refundable Rs 300 jar deposit confirmed on WhatsApp.</p>
-      </div>
+    <aside class="order-summary reveal">
+      <h3>Order summary</h3>
+      <div class="row"><span>Jar size</span><strong id="sum-size">20L</strong></div>
+      <div class="row"><span>Quantity</span><strong id="sum-qty">5 jars</strong></div>
+      <div class="row"><span>Delivery slot</span><strong id="sum-slot">Evening, 6–8 PM</strong></div>
+      <div class="row"><span>Payment</span><strong>On delivery</strong></div>
+      <p class="summary-note">Your rate is confirmed by our team on WhatsApp — bulk orders are always negotiable. First order of a returnable jar includes a one-time refundable deposit.</p>
     </aside>
   </div>
 </section>
 
-<!-- Live Tracking Section -->
 <section id="track" class="section-alt">
   <div class="wrap">
-    <div class="section-head reveal-up">
-      <div class="eyebrow-line">Order Tracking</div>
-      <h2>Where is my delivery?</h2>
-      <p>Need live rider ETA or wish to reschedule your drop slot? Send us a quick message on WhatsApp with your name or phone number.</p>
+    <div class="section-head">
+      <div class="eyebrow-line">Track an order</div>
+      <h2>Where's my jar?</h2>
+      <p>For live status, message us your order confirmation number on WhatsApp and our team will reply with the rider's ETA. A self-serve tracking page is on our roadmap — for now this stays fast and human.</p>
     </div>
-    <div class="reveal-up delay-1">
-      <a href="https://wa.me/9779700150416?text=Hi%2C%20I%27d%20like%20a%20status%20update%20on%20my%20water%20order." target="_blank" class="btn btn-wa" style="font-size:1rem; padding:.9em 1.8em;">
-        Message Rider Desk on WhatsApp
-      </a>
-    </div>
+    <a href="https://wa.me/9779700150416?text=Hi%2C%20I%27d%20like%20a%20status%20update%20on%20my%20order." target="_blank" class="btn btn-wa">Track via WhatsApp</a>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
     <div>
-      <div class="brand" style="margin-bottom:1.2em;">
+      <div class="brand" style="margin-bottom:1em;">
         <img src="assets/logo-mark.svg" class="brand-mark" alt="" style="filter:invert(1) brightness(2);">
         <span class="brand-name" style="color:var(--white)">Aqua Nirmal</span>
       </div>
-      <p style="color:rgba(255,255,255,.7); font-size:.92rem;">Aqua Nirmal Quality Khane Pani (Pra.) Ltd. — purified drinking water, delivered door-to-door. Bulk orders welcome.</p>
+      <p style="color:rgba(255,255,255,.8); font-size:.9rem;">Aqua Nirmal Quality Khane Pani (Pra.) Ltd. — purified water, delivered door to door. Bulk orders welcome.</p>
     </div>
     <div>
       <h4>Explore</h4>
@@ -174,7 +140,6 @@
         <li><a href="products.html">Products &amp; Pricing</a></li>
         <li><a href="about.html">About &amp; Quality</a></li>
         <li><a href="order.html">Order Online</a></li>
-        <li><a href="index.html#plant-tour">3D Plant Tour</a></li>
       </ul>
     </div>
     <div>
@@ -188,16 +153,15 @@
     <div>
       <h4>Reach us</h4>
       <ul>
-        <li>📞 +977 9700150416</li>
-        <li>✉️ aquanirmal5@gmail.com</li>
-        <li>📍 Gokarneshwor-8, Kathmandu</li>
-        <li>⏰ Sun–Fri, 7 AM–7 PM</li>
+        <li>+977 9700150416</li>
+        <li>aquanirmal5@gmail.com</li>
+        <li>Sun–Fri, 7 AM–7 PM</li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
     <span>© <span data-year></span> Aqua Nirmal. All rights reserved.</span>
-    <span>Pure Himalayan drinking water, door-to-door delivery.</span>
+    <span>Made for local, door-to-door water service.</span>
   </div>
 </footer>
 

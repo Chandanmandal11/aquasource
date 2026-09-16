@@ -1,461 +1,336 @@
-// ===== CONFIG — Aqua Nirmal Business Info =====
+// ===== CONFIG — edit these to match the real business =====
 const BUSINESS = {
   name: "Aqua Nirmal",
   whatsappNumber: "9779700150416", // country code + number, no + or spaces
   phone: "+977 9700150416",
   email: "aquanirmal5@gmail.com",
-  serviceAreas: ["Gokarneshwor", "Budhanilkantha", "Chabahil", "Sundarijal", "Jorpati", "Kapan", "Boudha", "Kathmandu"],
+  serviceAreas: ["Kathmandu", "Lalitpur", "Bhaktapur", "Gokarneshwor", "Budhanilkantha", "Chabahil", "Sundarijal", "Jorpati", "Kapan"],
+
+  // Homepage dashboard. THESE ARE PLACEHOLDERS — they are shown to customers
+  // as your delivery figures, so replace them with your real numbers (or drop
+  // the tile) before publishing. Nothing here is measured automatically.
+  dashboard: {
+    jarsToday: 128,               // jars delivered today
+    last7Days: [64, 92, 71, 118, 99, 143, 128], // same figure, previous 7 days
+  },
 };
 
+// Flag JS so CSS can safely hide scroll-reveal targets — without this class
+// the content stays visible for no-JS visitors.
+document.documentElement.classList.add("js");
+
+// ===== Mobile nav toggle =====
 document.addEventListener("DOMContentLoaded", () => {
-  // Set current year
+  const toggle = document.querySelector(".nav-toggle");
+  const nav = document.querySelector(".main-nav");
+  if (toggle && nav) {
+    toggle.addEventListener("click", () => {
+      nav.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", nav.classList.contains("open"));
+    });
+    nav.querySelectorAll("a").forEach(a =>
+      a.addEventListener("click", () => nav.classList.remove("open"))
+    );
+  }
+
   document.querySelectorAll("[data-year]").forEach(el => (el.textContent = new Date().getFullYear()));
 
-  // Core features
-  initMobileNav();
-  initWaterDroplets();
-  init3DTiltCards();
-  initGallery();
-  initLightbox();
-  initScrollReveal();
-  initButtonRipples();
+  initWaterBackground();
+  initJars3D();
+  initDashboard();
+  initTilt();
   initPincodeChecker();
   initOrderForm();
   initContactForm();
+  initMotion();
 });
 
-// =========================================================
-// 1. MOBILE NAV TOGGLE (Bug-free, Keyboard & Scroll-locked)
-// =========================================================
-function initMobileNav() {
-  const toggle = document.querySelector(".nav-toggle");
-  const nav = document.querySelector(".main-nav");
-  if (!toggle || !nav) return;
+// ===== Motion: scroll reveals, header lift, subtle hero parallax =====
+function initMotion() {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  function setOpen(isOpen) {
-    nav.classList.toggle("open", isOpen);
-    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    document.body.style.overflow = isOpen ? "hidden" : "";
-  }
-
-  toggle.addEventListener("click", () => {
-    const willOpen = !nav.classList.contains("open");
-    setOpen(willOpen);
+  // Anything inside a .wrap that reads as a block of content gets revealed on entry.
+  const targets = document.querySelectorAll(
+    ".reveal, .section-head, .step, .plan, .quote, .cert, .photo-card, .check-card, .process-list li, .order-summary, .hero-product"
+  );
+  targets.forEach((el, i) => {
+    el.classList.add("reveal");
+    el.style.setProperty("--reveal-delay", (i % 6) * 70 + "ms");
   });
 
-  // Close on link click
-  nav.querySelectorAll("a").forEach(a => {
-    a.addEventListener("click", () => setOpen(false));
-  });
+  if (reduced || !("IntersectionObserver" in window)) {
+    targets.forEach(el => el.classList.add("is-in"));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-in");
+        io.unobserve(entry.target);
+      });
+    }, { rootMargin: "0px 0px -12% 0px", threshold: 0.12 });
+    targets.forEach(el => io.observe(el));
 
-  // Close on Escape key
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && nav.classList.contains("open")) {
-      setOpen(false);
-    }
-  });
-
-  // Header scroll shadow
-  const header = document.querySelector(".site-header");
-  if (header) {
-    window.addEventListener("scroll", () => {
-      header.classList.toggle("scrolled", window.scrollY > 20);
-    }, { passive: true });
-  }
-}
-
-// =========================================================
-// 2. ANIMATED WATER DROPLETS & CONDENSATION CANVAS
-// =========================================================
-function initWaterDroplets() {
-  const container = document.querySelector(".water-droplets-backdrop");
-  if (!container) return;
-
-  const canvas = document.createElement("canvas");
-  canvas.className = "water-droplets-canvas";
-  container.appendChild(canvas);
-
-  const ctx = canvas.getContext("2d");
-  let width, height;
-  let animationId;
-  let isVisible = true;
-
-  // Droplets simulation array
-  let droplets = [];
-  const maxDroplets = window.innerWidth < 768 ? 45 : 85;
-
-  function resize() {
-    width = canvas.width = container.offsetWidth;
-    height = canvas.height = container.offsetHeight;
-    initDropletData();
-  }
-
-  function initDropletData() {
-    droplets = [];
-    for (let i = 0; i < maxDroplets; i++) {
-      droplets.push(createDroplet(true));
-    }
-  }
-
-  function createDroplet(initial = false) {
-    const radius = Math.random() < 0.8 ? (Math.random() * 3 + 1.5) : (Math.random() * 6 + 4);
-    return {
-      x: Math.random() * (width || 800),
-      y: initial ? Math.random() * (height || 600) : -15,
-      radius: radius,
-      speedY: radius > 4 ? (0.3 + Math.random() * 0.7) : (0.05 + Math.random() * 0.15),
-      speedX: (Math.random() - 0.5) * 0.05,
-      opacity: 0.4 + Math.random() * 0.45,
-      wobble: Math.random() * Math.PI * 2,
-      wobbleSpeed: 0.02 + Math.random() * 0.03,
-      tailLength: radius > 4 ? radius * 1.6 : 0
-    };
-  }
-
-  // Mouse interaction ripple
-  let mouse = { x: -1000, y: -1000, active: false };
-  window.addEventListener("mousemove", (e) => {
-    const rect = canvas.getBoundingClientRect();
-    if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
-      mouse.active = true;
-    } else {
-      mouse.active = false;
-    }
-  }, { passive: true });
-
-  function drawDroplet(d) {
-    ctx.save();
-    ctx.translate(d.x, d.y);
-
-    // Realistic Water droplet refraction & specular highlight
-    // 1. Soft droplet shadow
-    ctx.beginPath();
-    ctx.arc(1, 1.5, d.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(0, 0, 0, ${d.opacity * 0.22})`;
-    ctx.fill();
-
-    // 2. Droplet body with water refraction gradient
-    const grad = ctx.createRadialGradient(
-      -d.radius * 0.25, -d.radius * 0.25, d.radius * 0.1,
-      0, 0, d.radius
-    );
-    grad.addColorStop(0, `rgba(220, 245, 250, ${d.opacity * 0.9})`);
-    grad.addColorStop(0.5, `rgba(130, 195, 205, ${d.opacity * 0.5})`);
-    grad.addColorStop(0.9, `rgba(30, 80, 85, ${d.opacity * 0.4})`);
-    grad.addColorStop(1, `rgba(255, 255, 255, ${d.opacity * 0.7})`);
-
-    ctx.beginPath();
-    ctx.arc(0, 0, d.radius, 0, Math.PI * 2);
-    ctx.fillStyle = grad;
-    ctx.fill();
-
-    // 3. Crisp specular highlight on top curve
-    ctx.beginPath();
-    ctx.arc(-d.radius * 0.35, -d.radius * 0.35, d.radius * 0.3, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 255, 255, ${d.opacity * 0.95})`;
-    ctx.fill();
-
-    // 4. Subtle secondary bottom-rim light reflection
-    ctx.beginPath();
-    ctx.arc(d.radius * 0.25, d.radius * 0.3, d.radius * 0.2, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 255, 255, ${d.opacity * 0.5})`;
-    ctx.fill();
-
-    ctx.restore();
-  }
-
-  function update() {
-    if (!isVisible) return;
-
-    ctx.clearRect(0, 0, width, height);
-
-    for (let i = 0; i < droplets.length; i++) {
-      const d = droplets[i];
-      d.wobble += d.wobbleSpeed;
-      d.x += d.speedX + Math.sin(d.wobble) * 0.15;
-      d.y += d.speedY;
-
-      // Mouse wipe interaction
-      if (mouse.active) {
-        const dx = d.x - mouse.x;
-        const dy = d.y - mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 60) {
-          const force = (60 - dist) / 60;
-          d.x += (dx / dist) * force * 4;
-          d.y += (dy / dist) * force * 4;
-        }
-      }
-
-      // Reset when falling off canvas
-      if (d.y > height + 20 || d.x < -20 || d.x > width + 20) {
-        droplets[i] = createDroplet(false);
-      }
-
-      drawDroplet(d);
-    }
-
-    animationId = requestAnimationFrame(update);
-  }
-
-  window.addEventListener("resize", resize);
-  resize();
-
-  // Pause when out of view for 0% CPU waste
-  const observer = new IntersectionObserver((entries) => {
-    isVisible = entries[0].isIntersecting;
-    if (isVisible) {
-      cancelAnimationFrame(animationId);
-      animationId = requestAnimationFrame(update);
-    } else {
-      cancelAnimationFrame(animationId);
-    }
-  }, { threshold: 0.05 });
-
-  observer.observe(container);
-  animationId = requestAnimationFrame(update);
-}
-
-// =========================================================
-// 3. 3D PERSPECTIVE TILT CARDS (Interactive mouse parallax)
-// =========================================================
-function init3DTiltCards() {
-  const cards = document.querySelectorAll(".hero-3d-card, .photo-3d-item");
-  if (!cards.length) return;
-
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-  cards.forEach(card => {
-    // Ensure glare layer exists
-    let glare = card.querySelector(".card-glare");
-    if (!glare) {
-      glare = document.createElement("div");
-      glare.className = "card-glare";
-      card.appendChild(glare);
-    }
-
-    let isHovered = false;
-    let targetRotateX = 0;
-    let targetRotateY = 0;
-    let currentRotateX = 0;
-    let currentRotateY = 0;
-    let animFrame;
-
-    function renderTilt() {
-      // Smooth lerp easing
-      currentRotateX += (targetRotateX - currentRotateX) * 0.12;
-      currentRotateY += (targetRotateY - currentRotateY) * 0.12;
-
-      card.style.transform = `perspective(1000px) rotateX(${currentRotateX.toFixed(2)}deg) rotateY(${currentRotateY.toFixed(2)}deg) translateZ(${isHovered ? 12 : 0}px)`;
-
-      if (isHovered || Math.abs(currentRotateX) > 0.05 || Math.abs(currentRotateY) > 0.05) {
-        animFrame = requestAnimationFrame(renderTilt);
-      } else {
-        card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
-      }
-    }
-
-    card.addEventListener("mouseenter", () => {
-      isHovered = true;
-      cancelAnimationFrame(animFrame);
-      animFrame = requestAnimationFrame(renderTilt);
-    });
-
-    card.addEventListener("mousemove", (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-
-      // Max tilt angle
-      const maxTilt = 12;
-      targetRotateX = ((centerY - y) / centerY) * maxTilt;
-      targetRotateY = ((x - centerX) / centerX) * maxTilt;
-
-      // Glare position
-      const glareX = (x / rect.width) * 100;
-      const glareY = (y / rect.height) * 100;
-      card.style.setProperty("--glare-x", `${glareX}%`);
-      card.style.setProperty("--glare-y", `${glareY}%`);
-    });
-
-    card.addEventListener("mouseleave", () => {
-      isHovered = false;
-      targetRotateX = 0;
-      targetRotateY = 0;
-    });
-
-    // Device orientation for mobile (if available & permitted)
-    if (isTouchDevice && window.DeviceOrientationEvent && card.classList.contains("hero-3d-card")) {
-      window.addEventListener("deviceorientation", (e) => {
-        if (e.gamma !== null && e.beta !== null) {
-          const tiltX = Math.min(Math.max((e.beta - 45) * 0.25, -10), 10);
-          const tiltY = Math.min(Math.max(e.gamma * 0.25, -10), 10);
-          card.style.transform = `perspective(800px) rotateX(${tiltX.toFixed(1)}deg) rotateY(${tiltY.toFixed(1)}deg)`;
-        }
-      }, { passive: true });
-    }
-  });
-}
-
-// =========================================================
-// 4. 3D PHOTO GALLERY FILTERING
-// =========================================================
-function initGallery() {
-  const filterBtns = document.querySelectorAll(".gallery-filter-btn");
-  const items = document.querySelectorAll(".photo-3d-item");
-  if (!filterBtns.length || !items.length) return;
-
-  filterBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      filterBtns.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-
-      const filter = btn.getAttribute("data-filter");
-
-      items.forEach(item => {
-        const cat = item.getAttribute("data-category");
-        if (filter === "all" || cat === filter) {
-          item.style.display = "block";
-          setTimeout(() => {
-            item.style.opacity = "1";
-            item.style.transform = "scale(1)";
-          }, 20);
-        } else {
-          item.style.opacity = "0";
-          item.style.transform = "scale(0.95)";
-          setTimeout(() => {
-            item.style.display = "none";
-          }, 250);
+    // Safety net. An IntersectionObserver only reports elements that are
+    // intersecting when it samples, so a jump — an anchor link, or the browser
+    // restoring a scroll position — can skip straight past a block and leave it
+    // stuck at opacity 0. Sweep anything already scrolled past into view.
+    let sweeping = false;
+    const sweep = () => {
+      sweeping = false;
+      targets.forEach(el => {
+        if (el.classList.contains("is-in")) return;
+        if (el.getBoundingClientRect().top < window.innerHeight) {
+          el.classList.add("is-in");
+          io.unobserve(el);
         }
       });
-    });
-  });
-}
-
-// =========================================================
-// 5. LIGHTBOX MODAL (Click to Zoom in 3D)
-// =========================================================
-function initLightbox() {
-  const galleryItems = document.querySelectorAll(".photo-3d-item, .hero-3d-card");
-  if (!galleryItems.length) return;
-
-  // Create lightbox if not in DOM
-  let lightbox = document.querySelector(".photo-lightbox");
-  if (!lightbox) {
-    lightbox = document.createElement("div");
-    lightbox.className = "photo-lightbox";
-    lightbox.innerHTML = `
-      <div class="lightbox-content">
-        <button class="lightbox-close" aria-label="Close preview">&times;</button>
-        <div class="lightbox-img-box">
-          <img src="" alt="">
-        </div>
-        <div class="lightbox-caption">
-          <div>
-            <h3 id="lightbox-title"></h3>
-            <p id="lightbox-desc"></p>
-          </div>
-          <span class="badge-tag-amber" id="lightbox-badge">Aqua Nirmal</span>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(lightbox);
+    };
+    window.addEventListener("scroll", () => {
+      if (sweeping) return;
+      sweeping = true;
+      requestAnimationFrame(sweep);
+    }, { passive: true });
   }
 
-  const lbImg = lightbox.querySelector("img");
-  const lbTitle = lightbox.querySelector("#lightbox-title");
-  const lbDesc = lightbox.querySelector("#lightbox-desc");
-  const lbBadge = lightbox.querySelector("#lightbox-badge");
-  const closeBtn = lightbox.querySelector(".lightbox-close");
-
-  function openLightbox(src, title, desc, badge) {
-    lbImg.src = src;
-    lbTitle.textContent = title || "Aqua Nirmal Quality Khane Pani";
-    lbDesc.textContent = desc || "Purified and packaged with multi-stage RO, UV & Ozonation.";
-    lbBadge.textContent = badge || "Pure Batch";
-    lightbox.classList.add("active");
-    document.body.style.overflow = "hidden";
+  const header = document.querySelector(".site-header");
+  if (header) {
+    const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 12);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
   }
 
-  function closeLightbox() {
-    lightbox.classList.remove("active");
-    document.body.style.overflow = "";
+  if (!reduced) {
+    const art = document.querySelector(".hero-art");
+    if (art) {
+      let ticking = false;
+      window.addEventListener("scroll", () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const shift = Math.min(window.scrollY * 0.06, 28);
+          art.style.transform = `translateY(${shift}px)`;
+          ticking = false;
+        });
+      }, { passive: true });
+    }
+  }
+}
+
+
+// ===== 3D jar =====
+// A real CSS-3D jar. Each segment of the jar's profile (cap, neck, shoulder,
+// body) is its own cylinder: N flat "staves" fanned around the Y axis. The
+// staves are plain translucent glass — the curvature shading and specular
+// highlights live in a separate layer that does NOT spin, so the light stays
+// put the way it would on real glass while the jar turns underneath it.
+// The body is a true cylinder of flat staves fanned around the Y axis, and it
+// spins — its vertical ribs and the travelling water surface are what make the
+// rotation readable. The cap, neck and shoulder are surfaces of revolution:
+// they look identical at every angle, so building them from spinning panels
+// only produced overlap artefacts. They are drawn as shaded static geometry
+// instead, lit to match the body.
+const JAR_BODY = { staves: 28, rTop: 62, rBottom: 60, height: 152, top: 88 };
+const JAR3D = { drops: 8, bubbles: 6 };
+
+function buildFrustum(host, seg) {
+  const { staves, rTop, rBottom, height } = seg;
+  const dr = rBottom - rTop;
+  // Slant height and lean of each panel — after the lean, the panel's
+  // vertical extent is exactly `height` again.
+  const slant = Math.sqrt(height * height + dr * dr);
+  const tilt = (Math.atan2(dr, height) * 180) / Math.PI;
+  const rMid = (rTop + rBottom) / 2;
+  const rWide = Math.max(rTop, rBottom);
+  // Chord width at the wider end, plus a hair of overlap so no seams show.
+  const width = 2 * rWide * Math.tan(Math.PI / staves) + 1.4;
+  // Narrow end of each trapezoid, as an inset from both sides.
+  const inset = ((1 - Math.min(rTop, rBottom) / rWide) / 2) * 100;
+  const clip = inset > 0.5
+    ? (rTop < rBottom
+        ? `polygon(0% 100%, 100% 100%, ${(100 - inset).toFixed(2)}% 0%, ${inset.toFixed(2)}% 0%)`
+        : `polygon(${inset.toFixed(2)}% 100%, ${(100 - inset).toFixed(2)}% 100%, 100% 0%, 0% 0%)`)
+    : "";
+  const step = 360 / staves;
+
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < staves; i++) {
+    const stave = document.createElement("span");
+    stave.className = "stave";
+    stave.style.width = width.toFixed(2) + "px";
+    stave.style.height = slant.toFixed(2) + "px";
+    stave.style.marginLeft = (-width / 2).toFixed(2) + "px";
+    stave.style.marginTop = (-slant / 2).toFixed(2) + "px";
+    stave.style.transform =
+      `rotateY(${(i * step).toFixed(2)}deg) translateZ(${rMid.toFixed(2)}px) rotateX(${(-tilt).toFixed(2)}deg)`;
+    if (clip) stave.style.clipPath = clip;
+    // Phase the water animation around the circumference so the surface
+    // reads as one travelling wave rather than every panel pulsing at once.
+    stave.style.setProperty("--d", (-(i / staves) * 3.2).toFixed(2) + "s");
+    stave.appendChild(document.createElement("i"));
+    frag.appendChild(stave);
+  }
+  host.appendChild(frag);
+}
+
+function el(cls, tag) {
+  const node = document.createElement(tag || "div");
+  node.className = cls;
+  return node;
+}
+
+function initJars3D() {
+  document.querySelectorAll("[data-jar3d]").forEach(mount => {
+    if (mount.dataset.jarReady === "true") return;
+    mount.dataset.jarReady = "true";
+    mount.classList.add("jar3d");
+    mount.innerHTML = "";
+
+    const scene = el("jar3d-scene");
+
+    const spin = el("jar3d-spin");
+    const body = el("jar3d-cyl seg-body");
+    body.style.height = JAR_BODY.height + "px";
+    body.style.top = JAR_BODY.top + "px";
+    buildFrustum(body, JAR_BODY);
+    spin.append(body, el("jar3d-disc jar3d-base"));
+
+    // Static upper geometry: shoulder taper, ribbed neck, cap.
+    const top = el("jar3d-top");
+    top.append(el("jar3d-shoulder"), el("jar3d-neck"), el("jar3d-cap"));
+
+    // Non-spinning layers: curvature shading, highlights, then droplets.
+    const shade = el("jar3d-shade");
+    const light = el("jar3d-light");
+    const drops = el("jar3d-drops");
+
+    for (let i = 0; i < JAR3D.drops; i++) {
+      const d = el("drop", "span");
+      // Deterministic spread — the jar looks identical on every load.
+      d.style.setProperty("--x", (14 + (i * 23) % 68) + "%");
+      d.style.setProperty("--y", (36 + (i * 17) % 40) + "%");
+      d.style.setProperty("--s", (0.5 + ((i * 3) % 5) / 8).toFixed(2));
+      d.style.setProperty("--d", (i * 0.66).toFixed(2) + "s");
+      drops.appendChild(d);
+    }
+    for (let i = 0; i < JAR3D.bubbles; i++) {
+      const b = el("bubble", "span");
+      b.style.setProperty("--x", (30 + (i * 19) % 40) + "%");
+      b.style.setProperty("--s", (0.45 + ((i * 4) % 6) / 9).toFixed(2));
+      b.style.setProperty("--d", (i * 0.85).toFixed(2) + "s");
+      drops.appendChild(b);
+    }
+
+    // A soft ellipse at the base. The base disc is edge-on at this viewing
+    // angle, so without it the cylinder reads as cut off flat.
+    scene.append(spin, top, el("jar3d-foot"), shade, light, drops);
+    mount.append(scene, el("jar3d-shadow"));
+  });
+}
+
+// ===== Pointer-driven 3D tilt =====
+// Elements marked [data-tilt] rotate toward the cursor in real 3D, and their
+// [data-depth] children lift out of the plane for a layered parallax.
+function initTilt() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!window.matchMedia("(hover: hover)").matches) return; // pointer devices only
+
+  document.querySelectorAll("[data-tilt]").forEach(el => {
+    const max = parseFloat(el.dataset.tilt) || 9;
+    let frame = null;
+
+    el.addEventListener("pointermove", (e) => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        const r = el.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        el.style.setProperty("--rx", (-py * max).toFixed(2) + "deg");
+        el.style.setProperty("--ry", (px * max).toFixed(2) + "deg");
+        el.classList.add("is-tilting");
+        frame = null;
+      });
+    });
+
+    el.addEventListener("pointerleave", () => {
+      el.style.setProperty("--rx", "0deg");
+      el.style.setProperty("--ry", "0deg");
+      el.classList.remove("is-tilting");
+    });
+  });
+}
+
+// ===== Homepage dashboard =====
+function initDashboard() {
+  const dash = document.querySelector("[data-dashboard]");
+  if (!dash) return;
+
+  // Live clock — the one genuinely real value on the panel.
+  const clock = dash.querySelector("[data-clock]");
+  if (clock) {
+    const tick = () => {
+      clock.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    };
+    tick();
+    setInterval(tick, 30000);
   }
 
-  galleryItems.forEach(item => {
-    item.addEventListener("click", () => {
-      const img = item.querySelector("img");
-      if (!img) return;
-      const title = item.querySelector("h3")?.textContent || img.alt || "Aqua Nirmal";
-      const desc = item.querySelector("p")?.textContent || "Multi-stage purified water delivered to your doorstep.";
-      const badge = item.querySelector(".photo-3d-badge")?.textContent || "Pure Himalayan Source";
-      openLightbox(img.src, title, desc, badge);
+  // Delivery figures come from the BUSINESS config, never from the markup, so
+  // there is exactly one place to correct them.
+  const jarsToday = dash.querySelector("[data-jars-today]");
+  if (jarsToday) jarsToday.dataset.count = String(BUSINESS.dashboard.jarsToday);
+  const spark = dash.querySelector("[data-spark]");
+  if (spark) {
+    const days = BUSINESS.dashboard.last7Days;
+    const peak = Math.max(...days, 1);
+    days.forEach((value, i) => {
+      const bar = document.createElement("span");
+      bar.style.setProperty("--h", Math.max(8, (value / peak) * 100) + "%");
+      bar.style.setProperty("--i", i);
+      spark.appendChild(bar);
     });
-  });
+  }
 
-  closeBtn.addEventListener("click", closeLightbox);
-  lightbox.addEventListener("click", (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && lightbox.classList.contains("active")) closeLightbox();
-  });
+  // Service areas come straight from the BUSINESS config, so the count and the
+  // chips can never drift apart.
+  const areaCount = dash.querySelector("[data-areas-count]");
+  if (areaCount) areaCount.dataset.count = String(BUSINESS.serviceAreas.length);
+  const areaList = dash.querySelector("[data-areas]");
+  if (areaList) {
+    BUSINESS.serviceAreas.forEach(area => {
+      const chip = document.createElement("span");
+      chip.textContent = area;
+      areaList.appendChild(chip);
+    });
+  }
+
+  // Count the figures up when the panel scrolls into view.
+  const counters = dash.querySelectorAll("[data-count]");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const run = (el) => {
+    const target = parseFloat(el.dataset.count);
+    const decimals = (el.dataset.count.split(".")[1] || "").length;
+    const suffix = el.dataset.suffix || "";
+    if (reduced) { el.textContent = target.toFixed(decimals) + suffix; return; }
+    const duration = 1100;
+    const start = performance.now();
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = (target * eased).toFixed(decimals) + suffix;
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  if (!("IntersectionObserver" in window)) { counters.forEach(run); return; }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { run(e.target); io.unobserve(e.target); } });
+  }, { threshold: 0.4 });
+  counters.forEach(c => io.observe(c));
 }
 
-// =========================================================
-// 6. SCROLL REVEAL OBSERVER
-// =========================================================
-function initScrollReveal() {
-  const elements = document.querySelectorAll(".reveal-up");
-  if (!elements.length) return;
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-revealed");
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.12,
-    rootMargin: "0px 0px -40px 0px"
-  });
-
-  elements.forEach(el => observer.observe(el));
-}
-
-// =========================================================
-// 7. BUTTON WATER RIPPLE EFFECT
-// =========================================================
-function initButtonRipples() {
-  document.querySelectorAll(".btn").forEach(button => {
-    button.addEventListener("click", function (e) {
-      const rect = this.getBoundingClientRect();
-      const circle = document.createElement("span");
-      const diameter = Math.max(rect.width, rect.height);
-      const radius = diameter / 2;
-
-      circle.style.width = circle.style.height = `${diameter}px`;
-      circle.style.left = `${e.clientX - rect.left - radius}px`;
-      circle.style.top = `${e.clientY - rect.top - radius}px`;
-      circle.classList.add("ripple-fx");
-
-      const ripple = this.querySelector(".ripple-fx");
-      if (ripple) ripple.remove();
-
-      this.appendChild(circle);
-      setTimeout(() => circle.remove(), 600);
-    });
-  });
-}
-
-// =========================================================
-// 8. PINCODE / AREA CHECKER (Fixed Responsive Behavior)
-// =========================================================
+// ===== Pincode / service-area checker =====
 function initPincodeChecker() {
   const form = document.getElementById("pincode-form");
   if (!form) return;
@@ -466,33 +341,22 @@ function initPincodeChecker() {
     e.preventDefault();
     const val = input.value.trim();
     if (!val) {
-      result.textContent = "Please enter your area or tole name.";
-      result.style.color = "#E5A056";
+      result.textContent = "Enter your area or tole name.";
+      result.style.color = "#e2a35c";
       return;
     }
-    const covered = BUSINESS.serviceAreas.some(a =>
-      a.toLowerCase().includes(val.toLowerCase()) || val.toLowerCase().includes(a.toLowerCase())
-    );
+    const covered = BUSINESS.serviceAreas.some(a => a.toLowerCase().includes(val.toLowerCase()) || val.toLowerCase().includes(a.toLowerCase()));
     result.textContent = covered
-      ? "✓ Verified! We deliver to " + val + ". Next available slot: Today, 4–7 PM."
-      : "We may cover this area! WhatsApp us your exact location to confirm instant delivery.";
-    result.style.color = covered ? "#7FE0B5" : "#F5BA72";
+      ? "✓ We deliver to your area. Next slot: today, 4–7 PM."
+      : "Not sure if we cover this yet — WhatsApp us your area and we'll confirm.";
+    result.style.color = covered ? "#8fd6b4" : "#e2a35c";
   });
 }
 
-// =========================================================
-// 9. ORDER FORM (Live calculation & WhatsApp Handoff)
-// =========================================================
-const JAR_20L_TIERS = [
-  { min: 50, price: 30 },
-  { min: 30, price: 40 },
-  { min: 10, price: 50 },
-  { min: 1,  price: 70 },
-];
-function price20L(qty) {
-  return JAR_20L_TIERS.find(t => qty >= t.min).price;
-}
-const FLAT_PRICES = { "5L": 30, "1L": 15 };
+// ===== Order form: 20L jars only, min 5, live summary, WhatsApp handoff =====
+// Pricing is negotiated per order on WhatsApp, so no amounts are shown on the site.
+const MIN_JARS = 5;
+const MAX_JARS = 200;
 
 function initOrderForm() {
   const form = document.getElementById("order-form");
@@ -500,57 +364,45 @@ function initOrderForm() {
 
   const qtyDisplay = document.getElementById("qty-value");
   const qtyInput = document.getElementById("qty-hidden");
-  let qty = 1;
+  const minus = document.getElementById("qty-minus");
+  const plus = document.getElementById("qty-plus");
+  const note = document.getElementById("qty-note");
+  const slot = document.getElementById("o-slot");
+  let qty = MIN_JARS;
 
-  const minusBtn = document.getElementById("qty-minus");
-  const plusBtn = document.getElementById("qty-plus");
-
-  if (minusBtn && plusBtn) {
-    minusBtn.addEventListener("click", () => {
-      qty = Math.max(1, qty - 1);
+  function setQty(next) {
+    const clamped = Math.min(MAX_JARS, Math.max(MIN_JARS, next));
+    const hitFloor = next < MIN_JARS;
+    if (clamped !== qty) {
+      qty = clamped;
       qtyDisplay.textContent = qty;
+      qtyDisplay.classList.remove("bump");
+      void qtyDisplay.offsetWidth; // restart the bump animation
+      qtyDisplay.classList.add("bump");
       qtyInput.value = qty;
       updateSummary();
-    });
-    plusBtn.addEventListener("click", () => {
-      qty = Math.min(100, qty + 1);
-      qtyDisplay.textContent = qty;
-      qtyInput.value = qty;
-      updateSummary();
-    });
+    }
+    // The minus button stays clickable at the floor so a tap explains the
+    // 5-jar minimum instead of silently doing nothing.
+    minus.classList.toggle("at-limit", qty <= MIN_JARS);
+    plus.disabled = qty >= MAX_JARS;
+    if (hitFloor && note) {
+      note.classList.remove("nudge");
+      void note.offsetWidth;
+      note.classList.add("nudge");
+    }
   }
 
-  form.querySelectorAll('input[name="jarSize"], input[name="frequency"]').forEach(el =>
-    el.addEventListener("change", updateSummary)
-  );
-
-  function currentSize() {
-    return form.querySelector('input[name="jarSize"]:checked')?.value || "20L";
-  }
-  function currentFreq() {
-    return form.querySelector('input[name="frequency"]:checked')?.value || "one-time";
-  }
+  minus.addEventListener("click", () => setQty(qty - 1));
+  plus.addEventListener("click", () => setQty(qty + 1));
+  if (slot) slot.addEventListener("change", updateSummary);
 
   function updateSummary() {
-    const size = currentSize();
-    const unit = size === "20L" ? price20L(qty) : FLAT_PRICES[size];
-    const subtotal = unit * qty;
-    const freq = currentFreq();
-    const discount = freq === "weekly" ? 0.1 : freq === "monthly" ? 0.05 : 0;
-    const total = Math.round(subtotal * (1 - discount));
-
-    const sumSize = document.getElementById("sum-size");
-    const sumQty = document.getElementById("sum-qty");
-    const sumUnit = document.getElementById("sum-unit");
-    const sumFreq = document.getElementById("sum-freq");
-    const sumTotal = document.getElementById("sum-total");
-
-    if (sumSize) sumSize.textContent = size;
-    if (sumQty) sumQty.textContent = qty;
-    if (sumUnit) sumUnit.textContent = "Rs " + unit + (size === "20L" ? " (negotiable)" : "");
-    if (sumFreq) sumFreq.textContent = freq === "one-time" ? "One-time" : freq[0].toUpperCase() + freq.slice(1) + " subscription";
-    if (sumTotal) sumTotal.textContent = "~Rs " + total;
+    document.getElementById("sum-qty").textContent = qty + (qty === 1 ? " jar" : " jars");
+    const slotEl = document.getElementById("sum-slot");
+    if (slotEl && slot) slotEl.textContent = slot.value;
   }
+  setQty(MIN_JARS);
   updateSummary();
 
   form.addEventListener("submit", (e) => {
@@ -558,44 +410,273 @@ function initOrderForm() {
     if (!form.checkValidity()) { form.reportValidity(); return; }
 
     const data = new FormData(form);
-    const name = data.get("name");
-    const addr = data.get("address");
-    const pincode = data.get("pincode");
-    const phone = data.get("phone");
-    const slot = data.get("slot") || "Evening";
-    const size = currentSize();
-    const freq = currentFreq();
-    const total = document.getElementById("sum-total")?.textContent || "";
-
     const msg =
-      `*New Order — ${BUSINESS.name}*\n` +
-      `👤 *Name:* ${name}\n` +
-      `📞 *Phone:* ${phone}\n` +
-      `📍 *Address:* ${addr} (${pincode})\n` +
-      `📦 *Size:* ${size} x ${qty}\n` +
-      `🔄 *Plan:* ${freq}\n` +
-      `⏰ *Preferred Slot:* ${slot}\n` +
-      `💰 *Estimated Total:* ${total}\n\n` +
-      `_Please confirm availability and dispatch schedule._`;
+      `New order — ${BUSINESS.name}\n` +
+      `Name: ${data.get("name")}\n` +
+      `Phone: ${data.get("phone")}\n` +
+      `Address: ${data.get("address")} (${data.get("pincode")})\n` +
+      `Jar size: 20L\n` +
+      `Quantity: ${qty} jars\n` +
+      `Delivery slot: ${data.get("slot")}\n` +
+      `Please confirm the rate for this quantity.`;
 
     window.open(`https://wa.me/${BUSINESS.whatsappNumber}?text=${encodeURIComponent(msg)}`, "_blank");
   });
 }
 
-// =========================================================
-// 10. CONTACT FORM
-// =========================================================
+// ===== Contact form (demo — wire to your backend / form service) =====
 function initContactForm() {
   const form = document.getElementById("contact-form");
   if (!form) return;
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const status = document.getElementById("contact-status");
-    if (status) {
-      status.textContent = "✓ Message sent successfully! Our team will contact you shortly.";
-      status.style.color = "#256b53";
-      status.style.fontWeight = "600";
-    }
+    status.textContent = "Message received — we'll get back to you within a business day.";
+    status.style.color = "#2f5d4f";
     form.reset();
   });
+}
+
+// ===== Interactive Water Background (Movable waves, ripples & floating droplets) =====
+function initWaterBackground() {
+  const canvas = document.getElementById("hero-water-canvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const hero = canvas.closest(".hero") || canvas.parentElement;
+  let width = 0;
+  let height = 0;
+  let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize() {
+    const rect = hero.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener("resize", resize, { passive: true });
+
+  const mouse = {
+    x: width * 0.7,
+    y: height * 0.45,
+    targetX: width * 0.7,
+    targetY: height * 0.45,
+    isHovering: false,
+  };
+
+  const ripples = [];
+  function addRipple(x, y, strength = 1) {
+    if (ripples.length > 20) ripples.shift();
+    ripples.push({
+      x,
+      y,
+      radius: 6,
+      maxRadius: Math.max(width, height) * 0.5,
+      alpha: 0.75 * strength,
+      growth: 3.5 + Math.random() * 2,
+    });
+  }
+
+  // Floating ambient water droplets & light motes
+  const particles = [];
+  const particleCount = 26;
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * (width || 800),
+      y: Math.random() * (height || 500),
+      size: 1.5 + Math.random() * 3,
+      speedY: 0.35 + Math.random() * 0.65,
+      speedX: (Math.random() - 0.5) * 0.3,
+      opacity: 0.25 + Math.random() * 0.55,
+      wobble: Math.random() * Math.PI * 2,
+      wobbleSpeed: 0.02 + Math.random() * 0.03,
+    });
+  }
+
+  let lastMove = 0;
+  function onPointerMove(e) {
+    const rect = hero.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    if (px >= 0 && px <= width && py >= 0 && py <= height) {
+      const dx = px - mouse.targetX;
+      const dy = py - mouse.targetY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      mouse.targetX = px;
+      mouse.targetY = py;
+      mouse.isHovering = true;
+      const now = performance.now();
+      if (dist > 18 && now - lastMove > 80) {
+        addRipple(px, py, Math.min(dist / 35, 1.3));
+        lastMove = now;
+      }
+    }
+  }
+
+  hero.addEventListener("pointermove", onPointerMove, { passive: true });
+  hero.addEventListener("pointerdown", (e) => {
+    const rect = hero.getBoundingClientRect();
+    addRipple(e.clientX - rect.left, e.clientY - rect.top, 1.6);
+  }, { passive: true });
+  hero.addEventListener("pointerleave", () => {
+    mouse.isHovering = false;
+    mouse.targetX = width * 0.7;
+    mouse.targetY = height * 0.5;
+  });
+
+  let time = 0;
+  let animId = null;
+  let isVisible = true;
+
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      isVisible = entries[0].isIntersecting;
+      if (isVisible && !animId) loop();
+    }, { threshold: 0.05 });
+    io.observe(hero);
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    isVisible = !document.hidden;
+    if (isVisible && !animId) loop();
+  });
+
+  function drawWave(yOffset, amplitude, frequency, speed, colorTop, colorBottom, mouseInfluence) {
+    ctx.beginPath();
+    ctx.moveTo(0, height);
+
+    const mOffsetX = (mouse.x - width / 2) * mouseInfluence;
+    const mOffsetY = (mouse.y - height / 2) * mouseInfluence;
+
+    for (let x = 0; x <= width; x += 6) {
+      const distToMouse = Math.abs(x - mouse.x);
+      const mouseBump = mouse.isHovering ? Math.exp(-Math.pow(distToMouse / 190, 2)) * 18 : 0;
+      const y = yOffset + mOffsetY
+        + Math.sin(x * frequency + time * speed + mOffsetX * 0.006) * amplitude
+        + Math.cos(x * frequency * 0.65 - time * speed * 0.6) * (amplitude * 0.45)
+        - mouseBump;
+      ctx.lineTo(x, y);
+    }
+
+    ctx.lineTo(width, height);
+    ctx.closePath();
+
+    const grad = ctx.createLinearGradient(0, yOffset - amplitude, 0, height);
+    grad.addColorStop(0, colorTop);
+    grad.addColorStop(1, colorBottom);
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+
+  function loop() {
+    if (!isVisible) {
+      animId = null;
+      return;
+    }
+
+    time += 0.022;
+    mouse.x += (mouse.targetX - mouse.x) * 0.06;
+    mouse.y += (mouse.targetY - mouse.y) * 0.06;
+
+    ctx.clearRect(0, 0, width, height);
+
+    // Deep water wave
+    drawWave(
+      height * 0.58,
+      20,
+      0.0024,
+      0.85,
+      "rgba(14, 74, 91, 0.48)",
+      "rgba(4, 32, 42, 0.85)",
+      0.035
+    );
+
+    // Vibrant aqua wave
+    drawWave(
+      height * 0.68,
+      25,
+      0.0034,
+      1.2,
+      "rgba(27, 127, 151, 0.38)",
+      "rgba(7, 48, 61, 0.9)",
+      -0.05
+    );
+
+    // Foreground cyan wave with light caustic shimmer
+    drawWave(
+      height * 0.78,
+      18,
+      0.0048,
+      1.6,
+      "rgba(41, 168, 196, 0.32)",
+      "rgba(4, 32, 42, 0.95)",
+      0.075
+    );
+
+    // Movable ripples
+    for (let i = ripples.length - 1; i >= 0; i--) {
+      const rip = ripples[i];
+      rip.radius += rip.growth;
+      rip.alpha *= 0.955;
+
+      if (rip.alpha < 0.015 || rip.radius > rip.maxRadius) {
+        ripples.splice(i, 1);
+        continue;
+      }
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(rip.x, rip.y, rip.radius, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(124, 211, 228, ${rip.alpha * 0.75})`;
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(rip.x, rip.y, Math.max(0, rip.radius - 8), 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(41, 168, 196, ${rip.alpha * 0.4})`;
+      ctx.lineWidth = 3.2;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Floating water motes & particles
+    for (let p of particles) {
+      p.y -= p.speedY;
+      p.wobble += p.wobbleSpeed;
+      p.x += p.speedX + Math.sin(p.wobble) * 0.4;
+
+      const pdx = p.x - mouse.x;
+      const pdy = p.y - mouse.y;
+      const pDist = Math.sqrt(pdx * pdx + pdy * pdy);
+      if (pDist < 130) {
+        const force = (1 - pDist / 130) * 1.6;
+        p.x += (pdx / pDist) * force;
+        p.y += (pdy / pDist) * force;
+      }
+
+      if (p.y < -10) {
+        p.y = height + 10;
+        p.x = Math.random() * width;
+      }
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(184, 232, 241, ${p.opacity * (0.6 + Math.sin(time + p.wobble) * 0.4)})`;
+      ctx.shadowColor = "rgba(124, 211, 228, 0.85)";
+      ctx.shadowBlur = 6;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    animId = requestAnimationFrame(loop);
+  }
+
+  loop();
 }
