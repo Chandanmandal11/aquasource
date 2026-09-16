@@ -1291,7 +1291,10 @@ footer{ background: var(--grad-deep); }
   .section-head{ margin-bottom: 1.8em; }
   .section-head h2{ font-size: 1.85rem; }
   .steps, .quotes, .plant-grid, .cert-grid{ grid-template-columns: 1fr; }
-  .plant-card-img{ height: 200px; }
+  .plant-card-img{ height: auto; aspect-ratio: auto; background: var(--mist); }
+  .plant-card-img img, .photo-card img, .cert-grid img{ height: auto; object-fit: contain; }
+  .about-brand-board{ min-height: 0; }
+  .about-brand-board img{ height: auto; object-fit: contain; }
   .two-col, .contact-grid, .form-grid{ grid-template-columns: 1fr; }
   .form-grid .full{ grid-column: auto; }
   .check-card{ padding: 1.5em; }
@@ -1299,7 +1302,10 @@ footer{ background: var(--grad-deep); }
   .check-form input{ width:100%; }
 
   .hero-product-main{ padding: 1.8em 1.25em; }
-  .hero-product-art{ min-height: 200px; }
+  .hero-product-art{ min-height: 0; background: var(--mist); }
+  .hero-product-art img{ position:relative; inset:auto; height:auto; object-fit:contain; }
+  .hero-3d-photo{ background: var(--deep); }
+  .hero-3d-photo img{ object-fit:contain; }
   .product-lock-inner{ gap: .7em; }
   fieldset{ padding: 1.1em; }
   .qty-control{ justify-content:flex-start; }
