@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contact — Aqua Nirmal</title>
+<meta name="description" content="Contact Aqua Nirmal for drinking water delivery, corporate supply agreements, and customer service in Gokarneshwor, Kathmandu.">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -11,7 +12,7 @@
 <header class="site-header">
   <div class="wrap">
     <a href="index.html" class="brand">
-      <img src="assets/logo-mark.svg" class="brand-mark" alt="">
+      <img src="assets/logo-mark.svg" class="brand-mark" alt="Aqua Nirmal Logo">
       <span><span class="brand-name">Aqua Nirmal</span><span class="brand-tag">QUALITY KHANE PANI</span></span>
     </a>
     <nav class="main-nav">
@@ -32,69 +33,79 @@
 </header>
 
 <section class="page-hero">
-  <div class="wrap">
-    <div class="eyebrow-line">Contact</div>
-    <h1>Questions, complaints, corporate orders — we're one message away.</h1>
+  <div class="water-droplets-backdrop">
+    <div class="condensation-sheen"></div>
+  </div>
+  <div class="wrap" style="position:relative; z-index:2;">
+    <div class="eyebrow-line">Contact &amp; Customer Desk</div>
+    <h1>Questions, bulk pricing, quick queries — we're one call or message away.</h1>
+    <p>Talk directly with our Kathmandu plant office. We respond swiftly on WhatsApp, phone, or email.</p>
   </div>
 </section>
 
 <section>
   <div class="wrap contact-grid">
-    <div class="contact-info">
+    <!-- Contact Info & Map -->
+    <div class="contact-info reveal-up">
       <div class="item">
+        <div style="font-size:1.4rem;">📞</div>
         <div>
-          <strong>Call or WhatsApp</strong>
-          <p style="margin:0;">+977 9700150416<br>Sun–Fri, 7 AM – 7 PM</p>
+          <strong>Call or WhatsApp Dispatch</strong>
+          <p style="margin:0; color:#505957;">+977 9700150416<br>Sunday – Friday: 7:00 AM – 7:00 PM</p>
         </div>
       </div>
       <div class="item">
+        <div style="font-size:1.4rem;">✉️</div>
         <div>
           <strong>Email</strong>
-          <p style="margin:0;">aquanirmal5@gmail.com</p>
+          <p style="margin:0; color:#505957;">aquanirmal5@gmail.com</p>
         </div>
       </div>
       <div class="item">
+        <div style="font-size:1.4rem;">📍</div>
         <div>
-          <strong>Plant &amp; office</strong>
-          <p style="margin:0;">Gokarneshwor Municipality, Ward 8,<br>Kathmandu, Nepal</p>
+          <strong>Plant &amp; Facility Location</strong>
+          <p style="margin:0; color:#505957;">Gokarneshwor Municipality, Ward 8,<br>Kathmandu, Bagmati Province, Nepal</p>
         </div>
       </div>
       <div class="map-embed">
-        <iframe src="https://www.google.com/maps?q=Gokarneshwor+Kathmandu+Nepal&output=embed" loading="lazy" title="Map"></iframe>
+        <iframe src="https://www.google.com/maps?q=Gokarneshwor+Kathmandu+Nepal&output=embed" loading="lazy" title="Aqua Nirmal Gokarneshwor Location"></iframe>
       </div>
     </div>
 
-    <form id="contact-form">
+    <!-- Contact Form -->
+    <form id="contact-form" class="reveal-up delay-1" style="background:var(--white); padding:2em; border-radius:var(--radius-md); border:1px solid var(--line); box-shadow:var(--shadow-sm);">
+      <h3 style="margin-bottom:1em;">Send us a message</h3>
       <div class="form-grid">
         <div>
-          <label for="ct-name">Name</label>
-          <input id="ct-name" name="name" required>
+          <label for="ct-name">Full name</label>
+          <input id="ct-name" name="name" required placeholder="Your name">
         </div>
         <div>
-          <label for="ct-phone">Phone</label>
-          <input id="ct-phone" name="phone" type="tel" required>
+          <label for="ct-phone">Phone number</label>
+          <input id="ct-phone" name="phone" type="tel" required placeholder="e.g. 98XXXXXXXX">
         </div>
         <div class="full">
-          <label for="ct-email">Email</label>
-          <input id="ct-email" name="email" type="email">
+          <label for="ct-email">Email address (optional)</label>
+          <input id="ct-email" name="email" type="email" placeholder="name@example.com">
         </div>
         <div class="full">
-          <label for="ct-subject">Subject</label>
+          <label for="ct-subject">Inquiry type</label>
           <select id="ct-subject" name="subject">
-            <option>General enquiry</option>
-            <option>Order issue</option>
-            <option>Deposit refund</option>
-            <option>Corporate / bulk order</option>
-            <option>Feedback</option>
+            <option>General inquiry</option>
+            <option>Corporate / bulk contract</option>
+            <option>Delivery rescheduling</option>
+            <option>Deposit refund request</option>
+            <option>Feedback / review</option>
           </select>
         </div>
         <div class="full">
-          <label for="ct-message">Message</label>
-          <textarea id="ct-message" name="message" required></textarea>
+          <label for="ct-message">Your message</label>
+          <textarea id="ct-message" name="message" required placeholder="How can our water team assist you?"></textarea>
         </div>
         <div class="full">
-          <button class="btn btn-primary" type="submit">Send message</button>
-          <p id="contact-status" style="margin-top:.8em; font-size:.9rem;"></p>
+          <button class="btn btn-primary" type="submit">Send Message</button>
+          <p id="contact-status" style="margin-top:.8em; font-size:.92rem;"></p>
         </div>
       </div>
     </form>
@@ -104,11 +115,11 @@
 <footer>
   <div class="wrap">
     <div>
-      <div class="brand" style="margin-bottom:1em;">
+      <div class="brand" style="margin-bottom:1.2em;">
         <img src="assets/logo-mark.svg" class="brand-mark" alt="" style="filter:invert(1) brightness(2);">
         <span class="brand-name" style="color:var(--white)">Aqua Nirmal</span>
       </div>
-      <p style="color:rgba(255,255,255,.6); font-size:.9rem;">Aqua Nirmal Quality Khane Pani (Pra.) Ltd. — purified water, delivered door to door. Bulk orders welcome.</p>
+      <p style="color:rgba(255,255,255,.7); font-size:.92rem;">Aqua Nirmal Quality Khane Pani (Pra.) Ltd. — purified drinking water, delivered door-to-door. Bulk orders welcome.</p>
     </div>
     <div>
       <h4>Explore</h4>
@@ -116,6 +127,7 @@
         <li><a href="products.html">Products &amp; Pricing</a></li>
         <li><a href="about.html">About &amp; Quality</a></li>
         <li><a href="order.html">Order Online</a></li>
+        <li><a href="index.html#plant-tour">3D Plant Tour</a></li>
       </ul>
     </div>
     <div>
@@ -129,15 +141,16 @@
     <div>
       <h4>Reach us</h4>
       <ul>
-        <li>+977 9700150416</li>
-        <li>aquanirmal5@gmail.com</li>
-        <li>Sun–Fri, 7 AM–7 PM</li>
+        <li>📞 +977 9700150416</li>
+        <li>✉️ aquanirmal5@gmail.com</li>
+        <li>📍 Gokarneshwor-8, Kathmandu</li>
+        <li>⏰ Sun–Fri, 7 AM–7 PM</li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
     <span>© <span data-year></span> Aqua Nirmal. All rights reserved.</span>
-    <span>Made for local, door-to-door water service.</span>
+    <span>Pure Himalayan drinking water, door-to-door delivery.</span>
   </div>
 </footer>
 
